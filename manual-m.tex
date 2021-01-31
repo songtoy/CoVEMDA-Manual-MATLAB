@@ -1,0 +1,252 @@
+\documentclass[11pt]{article}
+
+\usepackage{ifpdf}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{paralist}
+\usepackage{subfigure}
+\usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
+\usepackage[cmex10]{amsmath}
+\interdisplaylinepenalty=2500
+\usepackage{geometry}
+\geometry{letterpaper}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+\usepackage{amsfonts}
+\usepackage{amstext}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage[font=normalsize]{caption}
+\usepackage{textcomp}
+\usepackage[usenames]{color}
+\usepackage{soul}
+\usepackage{fancyvrb}
+\usepackage{relsize}
+\usepackage[noadjust]{cite}
+\usepackage{xr-hyper}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage[colorlinks=true,urlcolor=blue,hyperfootnotes=false,backref=section,citecolor=LimeGreen]{hyperref}
+\usepackage{upquote}
+\usepackage[title,titletoc]{appendix}
+
+\usepackage[nottoc,notlof,notlot]{tocbibind}
+%\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+%\DefineVerbatimEnvironment%
+%  {Code}{Verbatim}
+%  {fontsize=\relsize{-1.5},
+%  samepage=true,
+%  frame=single}
+
+\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+\DefineVerbatimEnvironment%
+  {Notice}{Verbatim}
+  {fontsize=\relsize{-1.5},
+  samepage=true,
+  xleftmargin=15mm,
+  framesep=5mm,
+  frame=single}
+
+\newcommand{\covemda}{CoVEMDA}
+\newcommand{\covemdagithuburl}{https://github.com/tamu-engineering-research/COVID-EMDA}
+\newcommand{\matlab}{\textsc{MATLAB}}
+
+\definecolor{BackgroundColor}{HTML}{e7f2fa}
+\definecolor{SepColor}{HTML}{6ab0de}
+\definecolor{DarkGreen}{rgb}{0.0,0.4,0.0}
+
+\lstnewenvironment{Code}
+    {\lstset{
+        language=matlab,
+        frame=shadowbox, 
+        basicstyle=\ttfamily,
+        commentstyle=\color{DarkGreen},
+        stringstyle=\color{purple},
+        keywordstyle=\bfseries\color{blue},
+        backgroundcolor=\color{BackgroundColor}, 
+        rulesepcolor=\color{SepColor}%
+        }}
+    {}
+        
+%keywordstyle=[1]\color{blue}\bfseries,  % primitive funs in bold blue
+        %keywordstyle=[2]\color{Purple},         % args of funs in purple
+        %keywordstyle=[3]\color{Blue}\underbar,  % user funs in blue with underbar
+        
+\def\sectionautorefname{Chapter}
+\def\subsectionautorefname{Section}
+\def\subsubsectionautorefname{Section}
+\newcommand{\secref}[1]{\autoref{#1} \nameref{#1}}
+
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+\renewcommand{\thetable}{\thesection\mbox{-}\arabic{table}}
+\numberwithin{figure}{section}
+\renewcommand{\thefigure}{\thesection\mbox{-}\arabic{figure}}
+
+
+
+%%% title setting
+\title{User's Manual for CoVEMDA Toolbox}
+\author{}
+\date{\today}
+%\date{December 14, 2011\thanks{Second revision. First revision wyas December 13, 2011}} % comment this line to display the current date
+
+
+
+%%% BEGIN DOCUMENT
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\newpage
+\tableofcontents
+\thispagestyle{empty}
+
+
+%-------------------------------
+\newpage
+\setcounter{page}{1}
+\section*{Website}
+\addcontentsline{toc}{section}{Website}
+
+\url{https://github.com/tamu-engineering-research/COVID-EMDA}
+
+\begin{center}
+	\noindent\includegraphics[width=0.5\textwidth]{figures/covid_emda_logo.JPG}
+\end{center}
+
+
+
+%-------------------------------
+\newpage
+\section{Introduction} \label{sec:intro}
+
+\subsection{Background}
+
+\subsection{Features}
+
+\subsection{Support Team}
+
+\subsection{Suggested Citation}
+
+\subsection{License}
+\begin{Notice}
+	
+\end{Notice}
+
+
+
+
+
+%-------------------------------
+\newpage
+\section{Getting Started} \label{sec:start}
+
+\subsection{System Requirements}
+
+\subsection{Getting Data and Toolbox}
+
+\subsection{Running an Example}
+
+
+
+
+
+%----------------------------------------
+\newpage
+\section{Data Hub} \label{sec:datahub}
+
+\subsection{Data Category}
+
+\subsection{Data Structure}
+
+\subsection{Field Description}
+
+\subsection{Quality Control}
+
+
+
+
+
+
+
+
+%--------------------------------------------
+\newpage
+\section{Visualization} \label{sec:visual}
+
+\subsection{Generation Mix}
+
+\subsection{Renewable Energy}
+
+\subsection{Demand Profiles}
+
+\subsection{Price Distribution}
+
+\subsection{Mobility}
+
+
+
+
+
+
+%--------------------------------
+\newpage
+\section{Baseline Estimation} \label{sec:baseline}
+
+\subsection{Date and Week Alignment}
+
+\subsection{Ensemble Backcast Estimation}
+
+\subsection{Abnormal Price Index}
+
+\subsection{Excess Change Rate of Renewable}
+
+
+
+
+
+%---------------------------------
+\newpage
+\section{Regression Analysis} \label{sec:regression}
+
+\subsection{Regression Methodology}
+
+\subsection{Factor Analysis}
+
+
+
+
+
+
+%------------------------------------------------
+\newpage
+\section{Acknowledgments} \label{sec:thanks}
+
+
+
+
+
+
+%------------------------------------------------
+\begin{appendices}
+
+\newpage
+\section{Glossary} \label{sec:}
+
+
+\end{appendices}
+
+
+
+
+\newpage
+\section*{Reference} \label{sec:ref}
+\addcontentsline{toc}{section}{Reference}
+
+\end{document}
