@@ -140,7 +140,7 @@ This project is a collaboration of our group members under the supervision of Pr
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=.7\textwidth]{figures/contributor-0725.png}
+    \includegraphics[width=.8\textwidth]{figures/contributor-0725.png}
     \caption{Support Team}
 \end{figure}
 
@@ -226,7 +226,7 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
         \item Uncompress the zip file to certain directory.
         \begin{figure}[htbp]
             \centering
-            \includegraphics[width=.7\textwidth]{figures/github_website_step_1.png}
+            \includegraphics[width=.8\textwidth]{figures/github_website_step_1.png}
             \caption{Download from GitHub Website}
             \label{fig:githubwebsite}
         \end{figure}
@@ -247,7 +247,7 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
             
             \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=.7\textwidth]{figures/git_gui_step_1.png}
+                \includegraphics[width=.8\textwidth]{figures/git_gui_step_1.png}
                 \caption{Git GUI: Click \textbf{Clone Existing Repository}}
             \end{figure}
 
@@ -256,7 +256,7 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
             
             \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=.7\textwidth]{figures/git_gui_step_2.png}
+                \includegraphics[width=.8\textwidth]{figures/git_gui_step_2.png}
                 \caption{Git GUI: Filling two blanks}
             \end{figure}
 
@@ -269,7 +269,7 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
             \item Click \textbf{Clone repository...} under the \textbf{File} menu bar. 
             \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=.7\textwidth]{figures/github_desktop_step_1.png}
+                \includegraphics[width=.8\textwidth]{figures/github_desktop_step_1.png}
                 \caption{GitHub Desktop: \textbf{Clone repository} in the menu bar}
             \end{figure}
             \item Choose \textbf{URL} and input \verb!username/repository! as follows: 
@@ -278,7 +278,7 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
 
             \begin{figure}[htbp]
                 \centering
-                \includegraphics[width=.7\textwidth]{figures/github_desktop_step_2.png}
+                \includegraphics[width=.8\textwidth]{figures/github_desktop_step_2.png}
                 \caption{GitHub Desktop: Choose source and local path}
             \end{figure}
 
@@ -420,7 +420,7 @@ By default, the function plots the renewable share of the specified market from 
 \begin{table}[!ht]
 \centering
 \begin{threeparttable}
-\caption{Plot Renewable Share Option}
+\caption{Plot Renewable Share Options}
 \label{tab:plot_renewable_share_option}
 \footnotesize
 \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
@@ -638,7 +638,7 @@ Additional optional input arguments can be used to set date range, quantiles and
 
 In this section, we provide two typical tools to display the electricity price in U.S.  After the COVID-19 outbreak, electricity price become harder to trace. In order to trace the change of electricity price, we may observe the price data of different markets in U.S. and organize them into plots. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
 
-In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plotprice_distribution!. Both of them obtain relevant data from file \verb!<market_name>_rto_lmp.csv! in the data hub.
+In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plotprice_distribution!. Both of them obtain relevant data from file \\\verb!<market_name>_rto_lmp.csv! in the data hub.
 
 \subsubsection{plot price}
 
@@ -863,9 +863,9 @@ All the other input arguments should be in the form of \textbf{name-value pairs}
   'argument_name2', argument_value2, ...);
 \end{Code}
 
-Valid parameter names for each function above are listed in Table~\ref{tab:plot_gene_mix_option} to \ref{tab:plot_mob_opt}. Pay attention that \verb!plot_demand!, \verb!plot_renewable_share!, \verb!plot_price! and \verb!plot_mobility! are based on \matlab{} function \verb!plot!, \verb!plot_generation_mix! is based on \verb!area! and \verb!plot_price_distribution! based on \verb!histogram!. For those functions, all the name-value pair arguments are passed to corresponding \matlab{} functions except the ones listed in the table. For \verb!plot_daily_demand_curve!, however, the arguments are mainly passed to \verb!area!. If there are odd quantiles, the central one is displayed with \verb!plot! and only \verb!'Color'! and \verb!'LineWidth'! are passed to it.
+Valid parameter names for each function above are listed in Table~\ref{tab:plot_gene_mix_option} to~\ref{tab:plot_mob_opt}. Pay attention that \verb!plot_demand!, \verb!plot_renewable_share!, \verb!plot_price! and \verb!plot_mobility! are based on \matlab{} function \verb!plot!, \verb!plot_generation_mix! is based on \verb!area! and \verb!plot_price_distribution! based on \verb!histogram!. For those functions, all the name-value pair arguments are passed to corresponding \matlab{} functions except the ones listed in the table. For \verb!plot_daily_demand_curve!, however, the arguments are mainly passed to \verb!area!. If there are odd quantiles, the central one is displayed with \verb!plot! and only \verb!'Color'! and \verb!'LineWidth'! are passed to it.
 
-The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in \ref{subsubsec:vis_cus}.
+The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in~\ref{subsubsec:vis_cus}.
 
 As long as the market name (or the city name) is given, a basic version of the desired plot can be simply obtained. For example, to plot the price distribution histogram of ISONE, just enter
 
@@ -912,10 +912,12 @@ The result is displayed in Figure~\ref{fig:vis_eg3}, where the desired price tre
 Like \verb!plot!, all the functions can be used more than once to plot multiple curves in one figure. For example, to plot the demand curves of NYISO in 2018, 2019 and 2020 with week alignment, first calculate the corresponding date range:
 
 \begin{Code}
-  >> dr_2020 = datetime({'2020-02-01', '2020-04-30'});
-  >> dw = calweeks(52);
-  >> dr_2019 = dr_2020 - dw;
-  >> dr_2018 = dr_2019 - dw;
+  >> dr_2020 = datetime('2020-2-1'):datetime('2020-4-30');
+  >> dr_2019 = cal_baseline(dr_2020, 'Method', 'week');
+  >> dr_2018 = cal_baseline(dr_2020, 'Method', 'week',
+  'YearDuration', 2);
+  >> dr_2017 = cal_baseline(dr_2020, 'Method', 'week',
+  'YearDuration', 3);
 \end{Code}
 
 Thus the desired date ranges for 2018, 2019 and 2020 are \verb!dr_2018!, \verb!dr_2019! and \verb!dr_2020! correspondingly. Now plot the demand curves:
@@ -935,7 +937,7 @@ Thus the desired date ranges for 2018, 2019 and 2020 are \verb!dr_2018!, \verb!d
   \caption{Example: Demand Curves of NYISO} \label{fig:vis_eg4}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg4}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In \ref{subsubsec:vis_cus}, the modification of plots is explored further.
+The result is displayed in Figure~\ref{fig:vis_eg4}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In~\ref{subsubsec:vis_cus}, the modification of plots is explored further.
 
 
 
@@ -943,7 +945,7 @@ The result is displayed in Figure~\ref{fig:vis_eg4}, where the desired demand cu
 
 Like \matlab{}, there are mainly two approaches in \covemda{} to modifying a plot: before and after calling the plotting function. The former way refers to passing arguments in the form of \textbf{name-value pairs}, and the latter one refers to changing \textbf{property values} of the chart. They each have their own strengths, and both of them are commonly used to beautify a plot.
 
-In the last example in \ref{subsubsec:vis_basic}, several properties (label, color and line width) of the three lines are modified by passing name-value pair arguments to the function. In this way, the user is able to integrate multiple modifications in one line of code, making it concise and simple. For example, to display markers at data points, the user may enter
+In the last example in~\ref{subsubsec:vis_basic}, several properties (label, color and line width) of the three lines are modified by passing name-value pair arguments to the function. In this way, the user is able to integrate multiple modifications in one line of code, making it concise and simple. For example, to display markers at data points, the user may enter
 
 \begin{Code}
   >> plot_price('nyiso', 'ResampleBin', 'month', 'Marker', 'o');
@@ -977,7 +979,7 @@ However, it is difficult to obtain detailed control of the plot by merely passin
   \caption{Example: Daily Demand Curve of NYISO (After Changing range of y-axis)} \label{fig:vis_eg6_2}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg6_1} and \ref{fig:vis_eg6_2}, where the range of y-axis is enlarged. As the modified property belongs to the axes of the figure rather than area or line objects, the command \verb!ax = gca! is utilized to access the axes. Also, \verb!ylim([0, 4])! (using the function \verb!ylim!) has the same effect as \verb!ax.YLim = [0, 4]! in this case.
+The result is displayed in Figure~\ref{fig:vis_eg6_1} and~\ref{fig:vis_eg6_2}, where the range of y-axis is enlarged. As the modified property belongs to the axes of the figure rather than area or line objects, the command \verb!ax = gca! is utilized to access the axes. Also, \verb!ylim([0, 4])! (using the function \verb!ylim!) has the same effect as \verb!ax.YLim = [0, 4]! in this case.
 
 Under some circumstances, there may exist more than one object in the graph, which is common when using functions concerning \verb!area!. For example, to highlight renewable energy in a generation mix graph, the user may enter
 
@@ -1001,7 +1003,7 @@ Under some circumstances, there may exist more than one object in the graph, whi
   \caption{Example: Generation Mix of SPP (After Highlighting Renewables)} \label{fig:vis_eg7_2}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg7_1} and \ref{fig:vis_eg7_2}, where the color of all fuel types except hydro, solar and wind are changed to gray after the graph is plotted. Therefore, the renewables are visually highlighted.
+The result is displayed in Figure~\ref{fig:vis_eg7_1} and~\ref{fig:vis_eg7_2}, where the color of all fuel types except hydro, solar and wind are changed to gray after the graph is plotted. Therefore, the renewables are visually highlighted.
 
 Such modifications are obtained by changing property values of certain objects using dot notation. For a list of properties, see \verb!Axes Properties!, \verb!Line Properties!, \verb!Area Properties! and \verb!Histogram Properties!. See the help for each function for details.
 
