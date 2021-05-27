@@ -93,7 +93,6 @@
 \title{User's Manual for CoVEMDA Toolbox}
 \author{}
 \date{\today}
-%\date{December 14, 2011\thanks{Second revision. First revision wyas December 13, 2011}} % comment this line to display the current date
 
 
 
@@ -126,21 +125,27 @@
 
 \subsection{Background}
 
+With high contagiousness and long incubation period, the COVID-19 epidemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the opertion of power system has been greatly threatened by the epidemic, reseachers from Tsinghua University collaborated with Texas A\&M Engineering University team developed the COVID-EMDA+ dataset, in order to tackle the impacts effectively. 
+
+It was believed that the analysis on the multi-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for reseachers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a fine case-study on the correalations among various factors in complex power system.
+
+Therefore, the birth of a more comprehensive MATLAB toolbox named CoVEMDA was motivated. Based on COVID-EMDA dataset, CoVEMDA is designed to gurantee you the easy access to \textbf{Data Visualization}, \textbf{Baseline Estimation} and \textbf{Regression Analysis}, as well as other useful supplementary functions.
 \subsection{Features}
 \begin{itemize}
-    \item[$\bullet$] Overall, this data hub contains the \textbf{coronavirus case \& deaths}, \textbf{weather}, \textbf{generation mix}, \textbf{load} and \textbf{price} data for \textbf{all the existing U.S. electricity marketplaces}\footnote{Which refers to CAISO, MISO, ISO-NE, NYISO, PJM, SPP, ERCOT, see more in Section ~\ref{sec:datahub}} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. We also integrate other additional resources, including the \textbf{mobile device location}, \textbf{night-time lighting images}, \textbf{load forecasting}, \textbf{congestion price}, \textbf{forced outage} and \textbf{renewable curtailment} data. 
-    \item[$\bullet$] This data hub is updated every day after careful \textbf{quality control}. All data are carefully verified and coordinated to match the geological scale. All data are recorded and tidied in a consistent, compact and ready-to-use data format that makes it easy for cross-market analysis.
-    \item[$\bullet$] A supplementary toolbox on the basis of some useful parsers with other resources has been designed for further analysis as well as other user-defined extensions. The toolbox, implemented both in Python and MATLAB language, can guarantee you the easy access to \textbf{data visualization}, \textbf{baseline-estimation} and \textbf{regression analysis}.
+    \item[$\bullet$] COVID-EMDA multi-domain dataset involves electricity market data\footnote{Which refers to the \textbf{generation mix}, \textbf{load} and \textbf{price}}, public health data\footnote{{coronavirus case \& deaths}}, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces}\footnote{Which refers to CAISO, MISO, ISO-NE, NYISO, PJM, SPP, ERCOT, see more in Section~\ref{sec:datahub}} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for CoVEMDA\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
+    \item[$\bullet$] Data visualization. Visualization of almost all the data fields are implemented in the form of one-click (or one-line, to be specific) function, despite the variation of date range.
+    \item[$\bullet$] Baseline estimation. Conventional methods for baseline estimation including date- and week- alignment are introduced in CoVEMDA, while furtherly an \textbf{Ensemble Backcast Model} could provide better estimation with more valuable information.
+    \item[$\bullet$] Regression analysis. Cross-domain factors to be concerned, a Restricted Vector Auto Regression model is implemented in the toolbox, tailored for both the power system operators and the policy makers.
 \end{itemize}
 
-\textbf{Note}: Historical data dating back to 2017 are included as time-series benchmarks.
 
 \subsection{Support Team}
-This project is a collaboration of our group members under the supervision of Prof. Le Xie at Texas A\&M University. The support team keeps processing, correcting and updating the data every day. The team will also conduct further research analysis and share the latest progress in this repository.
+
+Together with COVID-EMDA dataset, this project is a collaboration of our group members under the supervision of Prof. Haiwang Zhong at Tsinghua University and Prof. Le Xie at Texas A\&M University. The support team keeps processing, correcting and updating the data every day. Yet the final responsibility for CoVEMDA Toolbox should be assign to the group leading by Prof. Zhong at Tsinghua University.
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=.8\textwidth]{figures/contributor-0725.png}
+    \includegraphics[width=.8\textwidth]{figures/contributor-extend-20210408.png}
     \caption{Support Team}
 \end{figure}
 
@@ -287,23 +292,125 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
     \end{itemize} 
 
 \clearpage
-\subsection{Running an Example}
+\subsection{Illustrative Examples}
 
-
+\begin{itemize}
+  \item Backcast: 
+  \item Regression Analysis: 
+\end{itemize}
 
 
 
 %----------------------------------------
 \newpage
 \section{Data Hub} \label{sec:datahub}
+The data hub, COVID-EMDA+ (Coronavirus Disease - Electricity Market Data Aggregation+), is specifically designed to track the potential impacts of COVID-19 on the existing U.S. electricity markets. Many different data sources are merged and harmonized here in order to enable further interdisciplinary researches. 
+
+\textbf{Note}: Historical data dating back to 2017 are included as time-series benchmarks.
 
 \subsection{Data Category}
-
+Five major components are included in the data hub: 
+\begin{itemize}
+	\item U.S. electricity market data\footnote{Source: \href{http://oasis.caiso.com/mrioasis/logon.do}{CAISO}, \href{https://www.misoenergy.org/markets-and-operations/real-time--market-data/market-reports/}{MISO}, \href{https://www.iso-ne.com/markets-operations/iso-express}{ISO-NE}, \href{https://www.nyiso.com/energy-market-operational-data}{NYISO}, \href{https://dataminer2.pjm.com/list}{PJM}, \href{https://marketplace.spp.org/groups/operational_data}{SPP}, \href{http://www.ercot.com/}{ERCOT}, \href{https://www.eia.gov/beta/electricity/gridmonitor/dashboard/electric_overview/US48/US48}{EIA}, \href{http://www.energyonline.com/}{EnergyOnline}.}. This part includes the generation mix, metered load profiles, day-ahead locational marginal prices data, as well as day-ahead load forecasting, congestion price, forced outage and renewable curtailment data.
+	\item Public health data\footnote{Source: \href{https://github.com/CSSEGISandData/COVID-19}{John Hopkins CSSE}.}. This part includes the COVID-19 confirmed cases, deaths data, infection rate and fatal rate.
+	\item Weather data\footnote{Source: \href{https://mesonet.agron.iastate.edu/request/download.phtml}{Iowa State Univ IEM}, \href{https://www.nws.noaa.gov/ost/asostech.html}{NOAA}.}. This part includes temperature, relative humidity, wind speed and dew point data. Typical weather stations are selected according to their geological locations and data quality.
+	\item Mobile device location data. This part includes social-distancing data and patterns of visits to Point of Interests (POIs). These data are derived by aggregating and processing the real-time GPS location of cellphone users by Census Block Group.\footnote{To obtain the access to the original data, please visit \href{https://docs.safegraph.com/docs}{Mobility Data From SafeGraph} and apply for SafeGraph's permission (totally free).}
+	\item Statellite images. Night Time Light (NTL)	Satellite data, to be specific. This part includes the raw satellite image taken at night time in each area.\footnote{Source: \href{https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/VNP46A1/}{NTL Images from NASA}.}
+\end{itemize}
+For some categories, multipl data sources are carefully gathered to ensure accurary.
 \subsection{Data Structure}
+This data hub mainly contains five components: source data, released data, supplementary resources, parser codes, and quick start tutorials. We navigate this data hub as shown in Figure~\ref{fig:filenavi}.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{figures/folder-structure-0725.png}
+	\caption{File Navigation.}
+	\label{fig:filenavi}
+\end{figure}
+
+All the data source files are archived in folder \textit{data\_source}, while the cleaned, processed data are stored in folder \textit{data\_release}. Daily updates containing the latest data would be properly classified by location. The file name convention of COVID-EMDA+ is: \textbf{MARKET\_AREA\_CATEGORY.csv}, e.g. \textit{nyiso\_nyc\_load.csv} is a dataset of load profile in New York City from 2017 to present.
+\footnote{Some quick start for the data itself is also accessible in folder \textit{startup} and \textit{supplementary}.}
 
 \subsection{Field Description}
-
+As mentioned, \textit{data\_release} folder contains all the cleaned and processed data. The file name follows the convention of \textbf{MARKET\_AREA\_CATEGORY.csv}. 
+All the files are organized in a wide csv table. Here are some tips for you to better utilize the data.
+\subsubsection{Electricity Data Field Description}
+\begin{itemize}
+	\item Field \textit{date}: list all the date from 2017 to present. Format: \textit{YYYY-mm-dd}
+	\item Field \textit{fuel}: only in generation mix dataset, represent the different fuel source used by generators. Possible values: \textit{coal, gas, oil, nuclear, hydro, wind, solar, export, other.} Different definitions in different electricity markets are harmonized.
+	\item Field \textit{kind}: only in weather dataset, represent the type of measurement that is recorded in each corresponding row. Possible value: \textit{dwpc (dew point temperature), relh (relative humidity), sped (wind speed), tmpc (temperature)}.
+	\item Field \textit{HH:MM}: represent the hourly time slot. For example, column ``08:00'' records the data of period 8AM to 9AM.
+\end{itemize}
+\subsubsection{COVID-19 Data Field Description}
+\begin{itemize}
+	\item Field \textit{date}: list all the date from Jan. 23, 2020 to present. Format: \textit{YYYY-mm-dd}
+	\item Field \textit{accum\_confirm}: accmulated confirmed case number recorded at each date.
+	\item Field \textit{new\_confirm}: newly confirmed case number at each date.
+	\item Field \textit{infect\_rate}: infection ratio calculated at each date.
+	\item Field \textit{accum\_death}: accmulated confirmed death number recorded at each date.
+	\item Field \textit{new\_death}: newly confirmed death number at each date.
+	\item Field \textit{fatal\_rate}: fatal rate calculated at each date.
+\end{itemize}
+\subsubsection{Visit Patterns to Point of Interests (POIs)}
+\begin{itemize}
+	\item Field \textit{date}: list all the date from Dec.30, 2019 to present. Format: \textit{YYYY-mm-dd}
+	\item Field \textit{Restaurant\_Recreaction}: daily total number of visits to Restaurant and Recreaction places. 
+	\item Field \textit{Grocery\_Pharmacy}: daily total number of visits to Grocery and Pharmacy places.
+	\item Field \textit{Retail}: daily total number of visits to Retail places. 
+\end{itemize}
+\subsubsection{Social Distancing}
+\begin{itemize}
+	\item Field \textit{date}: list all the date from Jan. 1, 2020 to present. Format: \textit{YYYY-mm-dd}
+	\item Field \textit{completely\_home\_device\_count\_percentage}: percentage of devices that stay at home 24 hours out of all devices.
+	\item Field \textit{median\_home\_dwell\_time\_percentage}: median proportion of home dwell time in one day.
+	\item Field \textit{part\_time\_work\_behavior\_devices\_percentage}: percentage of devices that go to workplaces for 3 to 6 hours out of all devices.
+	\item Field \textit{full\_time\_work\_behavior\_devices\_percentage}: percentage of devices that go to workplaces for more than 6 hours out of all devices.
+	\item Field \textit{completely\_home\_device\_count}: count of devices that stay at home 24 hours.
+	\item Field \textit{device\_count}: total count of devices.
+	\item Field \textit{part\_time\_work\_behavior\_devices\_count}: count of devices that go to workplaces for 3 to 6 hours.
+	\item Field \textit{full\_time\_work\_behavior\_devices\_count}: count of devices that go to workplaces for more than 6 hours.
+\end{itemize}
 \subsection{Quality Control}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{figures/data-quality-control.png}
+	\caption{Details of Data Quality Control. Data quality control mainly includes two aspects: outlier detection and missing data recovery. Backup data and historical trend are used to achieve both functions. For those that cannot be handled, we record them in the data quality report as shown in the Github as well.}
+	\label{fig:dataqualitycontrol}
+\end{figure}
+To provide reliable and easy-to-use datasets, a series of data checking and cleaning procedures are implemented, including cross validation	among different data sources. 
+In details, (as shown in Figure~\ref{fig:dataqualitycontrol})
+\begin{itemize}
+	\item Single missing data (most frequent) are filled by linear interpolation. For consecutive missing data (for example, consecutive missing dates, which are very rare), data from the EIA or EnergyOnline are carefully supplemented.
+	\item Outlier data samples are automatically detected when they are beyond 5 times or below 20\% of the associated daily average value. Exceptions such as price spikes and negative prices in LMP data are carefully handled.
+	\item Duplicate data are dropped, only the first occurrence of each data sample is kept.
+\end{itemize}
+It is recommended to check the following table to get some knowledge of data released before you use the datasets.
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage[normalem]{ulem}
+% \useunder{\uline}{\ul}{}
+\begin{table}[htbp]
+	\scriptsize
+	\begin{tabular}{llllp{0.3\textwidth}}
+	\toprule
+	\multicolumn{1}{l}{\textbf{Dataset Name}} & \multicolumn{1}{l}{\textbf{Market}} & \multicolumn{1}{l}{\textbf{Area}} & \multicolumn{1}{l}{\textbf{Category}} & \multicolumn{1}{l}{\textbf{Missing Dates}}                                                                                   \\
+	\midrule
+	caiso\_rto\_genmix.csv                    & CAISO                               & RTO Level                         & Generation Mix                        & Sep 23 - Oct 3, 2019                                                                                                         \\
+	caiso\_rto\_lmp.csv                       & CAISO                               & RTO Level                         & Day-Ahead LMP                         & Jan 1 - Jan 18, 2017; Oct 5, Oct 9, 2020                                                                                     \\
+	caiso\_la\_load.csv                       & Near CAISO                          & Los Angeles                       & Hourly Load                           & Nov 5, 2017; Jan 11 - 12, Jun 29 - 30, Jul 1 - 9, Sep 27, Nov 4, 2018; Mar 10, Nov 3, 2019; Mar 8, Nov 1, 2020; Mar 14, 2021 \\
+	caiso\_la\_weather                        & CAISO                               & Los Angeles                       & Weather                               & Apr 7 - 8, 2021                                                                                                              \\
+	ercot\_rto\_load.csv                      & \textbf{ERCOT}                      & \textbf{RTO Level}                & \textbf{Hourly Load}                  & Dec 13, 2020                                                                                                                 \\
+	ercot\_houston\_load.csv                  & ERCOT                               & Houston City                      & Hourly Load                           & Dec 13, 2020                                                                                                                 \\
+	ercot\_houston\_weather.csv               & ERCOT                               & Houston City                      & Weather                               & Feb 15 - 16, 2020                                                                                                            \\
+	isone\_rto\_genmix.csv                    & ISO-NE                              & RTO Level                         & Generation Mix                        & Apr 30, 2018; Jun 21, Oct 30-31, Dec 06, 2020                                                                                \\
+	isone\_rto\_load.csv                      & ISO-NE                              & RTO Level                         & Hourly Load                           & Dec 17, 2020                                                                                                                 \\
+	pjm\_rto\_genmix.csv                      & PJM                                 & RTO Level                         & Generation Mix                        & Mar 29 - Apr 2, 2017                                                                                                         \\
+	spp\_rto\_genmix.csv                      & SPP                                 & RTO Level                         & Generation Mix                        & Mar 29, 2019                                                                                                                 \\
+	spp\_kck\_weather.csv                     & SPP                                 & Kansas City                       & Weather                               & Sep 22 - 23                \\                                                                                                 
+	\bottomrule
+	\end{tabular}
+	\end{table}
+
 
 
 
@@ -1015,12 +1122,177 @@ Such modifications are obtained by changing property values of certain objects u
 \newpage
 \section{Baseline Estimation} \label{sec:baseline}
 
+
+
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, the function calculates the load baseline of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument Method to alter calculation method (\verb!'date', 'week', 'backcast'!), or DateRangeCovid to change the output date range.
+
+In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. The user can appoint the methods to be plotted by specifying the value of name-value pair argument Method. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin, ResampleMethod! as well, just like the visualization functions in Sec.~\ref{sec:visual}.
+
+In practical use, all the other arguments to be mentioned below are actually passed by the two high-level functions above. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function \verb!cal_baseline! like this:
+
+\begin{Code}
+>> cal_baseline('nyiso', 'TrainModel', 1, 'ModelNum', [10, 3]);
+\end{Code}
+
 \subsection{Date and Week Alignment}
 
+
+
+If \verb!Method! is specified as \verb!date!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same date and month in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_dates!.
+
+If \verb!Method! is specified as \verb!week!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same week and day of week in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_week_index!.
+
+If either of those two situations occurs, no extra name-value pairs need to be specified.
+
+
+
 \subsection{Ensemble Backcast Estimation}
+The \textbf{Ensemble Backcast Model} is used to estimate the electricity consumption profile in the absence of COVID-19 pandemic, so that the comparison between the model and actual metered electricity consumption can be used to quantify the impact of COVID-19.
+
+A backcast model is expressed as a function that maps potential factors that may affect electricity consumption level, including weather variables (such as temperature, humidity and wind speed), date of year, and economic prosperity (yearly GDP growth rate) to the estimated electricity consumption. Given a group of backcast models, ensemble forecasting is widely recognized as the best approach to provide rich interval information. A group of backcast models for the daily average electricity consumption can be described by
+
+\begin{equation*}
+  \hat L_{md}=\frac{1}{N}\sum\limits_{i=1}^N \hat f_i(C_{md}, T_{mdq}, H_{mdq}, S_{mdq}, E),\forall m,d
+\end{equation*}
+
+where 
+\begin{itemize}
+  \item $C_{md}$ is the calendar information including month, day, weekday, and holiday flag.
+  \item $\hat L_{md}$ is the estimated daily average electricity consumption for month $m$ and day $d$.
+  \item $\hat f_i$ is the $i$-th backcast model.
+  \item $T_{mdq},H_{mdq},S_{mdq}$ are temperature, humidity and wind speed within the selected quantiles $q$.
+  \item $E$ is the estimated GDP growth rate.
+\end{itemize}
+We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing. With the backcast estimations, the daily reduction in electricity consumption $r_{md}$ is calculated as follows,
+\begin{equation}
+  \label{eqn:ensemble}
+  r_{md}=(1-\frac{1}{\hat L_{md}}\cdot \frac{1}{T}\sum\limits_{t=1}^TL_{mdt})\times 100\%, \forall m,d,
+\end{equation}
+where $T=24$ is the total number of hours in one day, and $L_{mdt}$ is the electricity consumption metered at time $t$ on month $m$ and day $d$. Equation~\ref{eqn:ensemble} compares the ensemble backcast and actual electricity consumption results, and can be readily extended to interval estimations by adjusting the ensemble backcast result.
+
+
+If \verb!Method! is specified as \verb!backcast!, function \verb!cal_baseline! calculates the load baseline by either training new models or using existing models. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_backcast!, and other complementary functions. Valid parameter names are listed in Table~\ref{tab:back_opt}.
+
+Function \verb!cal_baseline_by_backcast! consists of 3 or 6 steps (depends on whether to train models or not). To be more specific, if the user chooses to train a new model, the function
+
+\begin{enumerate}
+    \item imports training data and splits training and testing set (\verb!backcast_import_data!);
+    \item trains two-layer deep neural network models using training set with validation (\verb!backcast_scan_training!);
+    \item tests all the models and selects the best ones using testing set (\verb!backcast_test_model!);
+    \item saves trained models and summary (\verb!basic_backcast_save_file!);
+    \item imports data for baseline estimation (\verb!backcast_import_data!);
+    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
+\end{enumerate}
+
+If the user chooses not to train models but to use pre-trained models, the function
+
+\begin{enumerate}
+    \item imports existing models (\verb!basic_backcast_import_models!);
+    \item imports data for baseline estimation (\verb!backcast_import_data!);
+    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
+\end{enumerate}
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Calculate Baseline By Backcast Options}
+    \label{tab:back_opt}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      TrainModel & integer value & Train (1) or not train (0) models.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0. \\
+      \end{tabular}                         \\
+      \midrule
+      ImportNum & integer value or \verb!'latest'! & The id of the existing model to be imported. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'latest'!. \\
+      \end{tabular}                         \\
+      \midrule
+      DateRangeTrain & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for model training. Only effective when TrainModel=1.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2018-02-01','2020-01-31'}!. \\
+        Example & \verb!{'2018-01-01','2019-12-31'}!  \\
+                & \verb!["2018-01-01","2019-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      ModelNum & two-element numeric vector & The number of models to be tested and selected. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![800, 200]!. \\
+      \end{tabular}                         \\
+      \midrule
+      numHiddenUnits & two-element numeric vector & The number of hidden units in the two full connection layers. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![32, 64]!. \\
+      \end{tabular}                         \\
+      \midrule
+      TrainVerbose & integer value & Indicator to display training progress information. No display(0), brief display(1) or detailed display(2). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      RandVariation & double value in (0,1) & Relative range (1-RandVariation, 1+RandVariation) of random variation of model parameters numHiddenUnits for scan training. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0.2. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveModel & integer value & Indicator to save trained models in \matlab{} .asv files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveModelONNX & integer value & Indicator to save trained models in .onnx files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveSummary & integer value & Indicator to save summary of trained models. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      Quantile & numeric vector in (0,1) & Quantiles to be calculated in scan prediction. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![0.1, 0.25, 0.5, 0.75, 0.9]!. \\
+        Example & 0.5   \\
+      \end{tabular}                         \\
+      \midrule
+      PredictVerbose & integer value & Indicator to display prediction progress information. No display(0) or brief display(1).  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
 
 \subsection{Abnormal Price Index}
 
+Locational marginal prices play a crucial role in electricity markets and contribute to balancing generation and demand efficiently. Since these prices are relatively stochastic in nature, it is unsatisfactory to analyze them in the same way as electricity demand\footnote{the uncertainty intervals will be very wide}. Thus, the abnormal price index is developed to provide a more reliable tool for price analysis, which is defined as follows,
+\begin{equation*}
+  I(\lambda_{ymdt})=|2\hat F_m(\lambda_{ymdt})-1|, \forall y,m,d,t,
+\end{equation*}
+where $\lambda_{ymdt}$ is the day-ahead locational marginal price of year $y$, month $m$, day $d$, and hour $t$. $I(\cdot)$ is the proposed index, which lies between zero and one. This index quantifies the abnormality of a typical price, and a larger index value represents a more unusual observation. $\hat F_m(\cdot)$ is the cumulative distribution function for the prices in month $m$.\footnote{Which are more stable for analyzing these price changes. See the reason in \cite{quantitaveassess}}.
+
+The statistical meaning of the above index is explained by the probability density function shown in Figure~\ref{fig:abnormal_price_index}. For a given price, the index donates a possibility that measures how close this price is to the mean value. For example, if a price observation is located within the 25\% and 75\% quantiles, we obtain an index value below 0.5, which is considered normal.
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/abnormal_price_index.png}
+  \caption{Statistical illustration of the proposed abnormal price index. The basic idea is to show how near a price observation is to the mean value. This index can eliminate some stochastic factors when assessing price changes. The index value lies in [0,1], and a larger value means a higher possibility of abnormality.}
+  \label{fig:abnormal_price_index}
+\end{figure}
+
+\begin{Code}
+output = cal_abnormal_price_index(market, varargin)
+\end{Code}
 \subsection{Excess Change Rate of Renewable}
 
 
@@ -1032,10 +1304,64 @@ Such modifications are obtained by changing property values of certain objects u
 \section{Regression Analysis} \label{sec:regression}
 
 \subsection{Regression Methodology}
+To interpret the changes in electricity consumption during epidemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account. 
+
+Restried Vector Autoregression (Restricted VAR) models are implemented in \covemda. Restricted VAR models are powerful tools for multivariate time series analysis with complex correlations.
+
+Vector autoregression (VAR)\cite{var} is a stochastic process model that can be used to capture the linear correlation between multiple time-series. We model the dynamics of reduction in electricity consumption using a Restricted VAR model of order p as follows:
+
+\begin{equation}
+  X_t=C+A_1X_{t-1}+\dots+A_pX_{t-p}+E_t,
+\end{equation}
+where
+\begin{equation}
+  A_i=
+  \begin{bmatrix}
+  a_{1,1}^i & a_{1,2}^i & \cdots & a_{1,n}^i\\
+  a_{2,1}^i & a_{2,2}^i & \cdots & a_{2,n}^i\\
+  \vdots & \vdots & \ddots & \vdots \\
+  a_{n,1}^i & a_{n,2}^i & \cdots & a_{n,n}^i\\
+  \end{bmatrix}
+  ,X_t=
+  \begin{bmatrix}
+    x_t^1\\x_t^2\\\vdots\\x_t^n
+  \end{bmatrix},
+  C=
+  \begin{bmatrix}
+    c^1\\c^2\\\vdots\\c^n
+  \end{bmatrix},
+  E_t=
+  \begin{bmatrix}
+    e_t^1\\e_t^2\\\vdots\\e_t^n
+  \end{bmatrix},
+\end{equation}
+in which $A_i$ is the regression matrix, $x_t^1$ represents the target output variable at time $t$, namely the reduction in electricity consumption we wish to model, $x_t^2,\cdots,x_t^n$ represent the selected $n-1$ parameter variables including confirmed case numbers, stay-at-home population, median home dwell time rate, population of on-site workers, mobility in the retail sector and etc., $C$ and $E_t$ are respectively column vectors of intercept and random errors, and the time notation $t-p$ represents the $p$-th lag of the variables.
 
 \subsection{Factor Analysis}
-
-
+The full procedure of building the restricted VAR model mainly contains four steps as follows, including pre-estimation preparation, restricted VAR model estimation, restricted VAR model verification, and post-estimation analysis.
+\subsubsection{Pre-estimation Preparation}
+\begin{itemize}
+  \item Data Preprocessing: Several datasets are collected to calculate the inputs of restricted VAR model, including electricity market data, weather data, number of COVID-19 cases, and mobile device location data. We take logarithms of several variables, including electricity consumption reduction, new daily confirmed cases, stay-at-home population, population of full-time on-site workers, population of part-time on-site workers, and mobility in the retail sector, while only keeping the original value of the median home dwell time rate.
+  \item Augmented Dickey-Fuller (ADF) Test: Test whether a time-series variable is non-stationary and possesses a unit root.
+  \item Cointegration Test: Test the long-term correlation between multiple non-stationary time-series.
+  \item Granger Causality Wald Test: Estimate the causality relationship among two variables represented as time-series.
+\end{itemize}
+\subsubsection{Restricted VAR Model Estimation}
+\begin{itemize}
+  \item  Ordinary Least Square (OLS): We impose constraints on the OLS to eliminate any undesirable causal relationships between variables.
+\end{itemize}
+\subsubsection{Restricted VAR Model Verification}
+\begin{itemize}
+  \item ADF Test: Verify if the residual time-series are non-stationary and possess a unit root.
+  \item Ljung-Box Test: Verify the endogeneity of the residual data that may render the regression result untrustworthy.
+  \item Durbin-Watson Test: Detect the presence of autocorrelation at log 1 in the residuals of the Restricted VAR model.
+  \item Robustness Test: Test the robustness of the Restricted VAR model against parameter perturbations.
+\end{itemize}
+\subsubsection{Post-estimation Analysis}
+\begin{itemize}
+  \item Impulse Response Analysis: Describe the evolution of the Restricted VAR model’s variable in response to a shock in one or more variables.
+  \item Forecast Error Variance Decomposition: Aid in the interpretation of the Restricted VAR model by determining the proportion of each variable’s forecast variance that is contributed by shocks to the other variables.
+\end{itemize}
 
 
 
