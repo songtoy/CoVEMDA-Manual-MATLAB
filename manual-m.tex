@@ -90,7 +90,7 @@
 
 
 %%% title setting
-\title{User's Manual for CoVEMDA Toolbox}
+\title{User's Manual for\\\textbf{CoVEMDA Toolbox}}
 \author{}
 \date{\today}
 
@@ -98,7 +98,16 @@
 
 %%% BEGIN DOCUMENT
 \begin{document}
-\maketitle
+\makeatletter
+    \begin{titlepage}
+        \begin{center}
+            \includegraphics[width=.7\textwidth]{figures/covid_emda_logo.JPG}%
+            \vskip 0.5ex%
+            {\huge \@title \par}
+
+        \end{center}
+    \end{titlepage}
+\makeatother
 \thispagestyle{empty}
 \newpage
 \tableofcontents
@@ -125,16 +134,16 @@
 
 \subsection{Background}
 
-With high contagiousness and long incubation period, the COVID-19 epidemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the opertion of power system has been greatly threatened by the epidemic, reseachers from Tsinghua University collaborated with Texas A\&M Engineering University team developed the COVID-EMDA+ dataset, in order to tackle the impacts effectively. 
+With high contagiousness and long incubation period, the COVID-19 pandemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the operation of power system has been greatly threatened by the pandemic, to effectively respond to the effects, Tsinghua University collaborated with Texas A\&M Engineering University developed the COVID-EMDA+ Dataset.
 
-It was believed that the analysis on the multi-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for reseachers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a fine case-study on the correalations among various factors in complex power system.
+It was believed that the analysis on the cross-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for researchers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a unique case-study on the correlations among various factors in complex power system.
 
-Therefore, the birth of a more comprehensive MATLAB toolbox named CoVEMDA was motivated. Based on COVID-EMDA dataset, CoVEMDA is designed to gurantee you the easy access to \textbf{Data Visualization}, \textbf{Baseline Estimation} and \textbf{Regression Analysis}, as well as other useful supplementary functions.
+Therefore, a more comprehensive MATLAB toolbox named CoVEMDA was motivated for analysis. Based on COVID-EMDA+ Dataset, CoVEMDA is designed for functionalities including \textbf{Data Visualization}, \textbf{Baseline Estimation} and \textbf{Regression Analysis}, as well as other useful supplementary functions.
 \subsection{Features}
 \begin{itemize}
-    \item[$\bullet$] COVID-EMDA multi-domain dataset involves electricity market data\footnote{Which refers to the \textbf{generation mix}, \textbf{load} and \textbf{price}}, public health data\footnote{{coronavirus case \& deaths}}, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces}\footnote{Which refers to CAISO, MISO, ISO-NE, NYISO, PJM, SPP, ERCOT, see more in Section~\ref{sec:datahub}} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for CoVEMDA\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
+    \item[$\bullet$] Data Source. CoVEMDA toolbox is initially developed to supprt COVID-EMDA+ Dataset. COVID-EMDA+ cross-domain dataset involves electricity market data, public health data, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for CoVEMDA\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
     \item[$\bullet$] Data visualization. Visualization of almost all the data fields are implemented in the form of one-click (or one-line, to be specific) function, despite the variation of date range.
-    \item[$\bullet$] Baseline estimation. Conventional methods for baseline estimation including date- and week- alignment are introduced in CoVEMDA, while furtherly an \textbf{Ensemble Backcast Model} could provide better estimation with more valuable information.
+    \item[$\bullet$] Baseline estimation. Conventional methods for baseline estimation including date and week alignment are introduced in CoVEMDA, while an \textbf{Ensemble Backcast Model} could provide better estimation with more valuable information.
     \item[$\bullet$] Regression analysis. Cross-domain factors to be concerned, a Restricted Vector Auto Regression model is implemented in the toolbox, tailored for both the power system operators and the policy makers.
 \end{itemize}
 
@@ -333,14 +342,14 @@ All the data source files are archived in folder \textit{data\_source}, while th
 \subsection{Field Description}
 As mentioned, \textit{data\_release} folder contains all the cleaned and processed data. The file name follows the convention of \textbf{MARKET\_AREA\_CATEGORY.csv}. 
 All the files are organized in a wide csv table. Here are some tips for you to better utilize the data.
-\subsubsection{Electricity Data Field Description}
+\subsubsection{Electricity Market Data}
 \begin{itemize}
 	\item Field \textit{date}: list all the date from 2017 to present. Format: \textit{YYYY-mm-dd}
 	\item Field \textit{fuel}: only in generation mix dataset, represent the different fuel source used by generators. Possible values: \textit{coal, gas, oil, nuclear, hydro, wind, solar, export, other.} Different definitions in different electricity markets are harmonized.
 	\item Field \textit{kind}: only in weather dataset, represent the type of measurement that is recorded in each corresponding row. Possible value: \textit{dwpc (dew point temperature), relh (relative humidity), sped (wind speed), tmpc (temperature)}.
 	\item Field \textit{HH:MM}: represent the hourly time slot. For example, column ``08:00'' records the data of period 8AM to 9AM.
 \end{itemize}
-\subsubsection{COVID-19 Data Field Description}
+\subsubsection{COVID-19 Data}
 \begin{itemize}
 	\item Field \textit{date}: list all the date from Jan. 23, 2020 to present. Format: \textit{YYYY-mm-dd}
 	\item Field \textit{accum\_confirm}: accmulated confirmed case number recorded at each date.
@@ -350,7 +359,7 @@ All the files are organized in a wide csv table. Here are some tips for you to b
 	\item Field \textit{new\_death}: newly confirmed death number at each date.
 	\item Field \textit{fatal\_rate}: fatal rate calculated at each date.
 \end{itemize}
-\subsubsection{Visit Patterns to Point of Interests (POIs)}
+\subsubsection{Visit Patterns to Point of Interests}
 \begin{itemize}
 	\item Field \textit{date}: list all the date from Dec.30, 2019 to present. Format: \textit{YYYY-mm-dd}
 	\item Field \textit{Restaurant\_Recreaction}: daily total number of visits to Restaurant and Recreaction places. 
@@ -582,7 +591,7 @@ Others & & Modifications of the line objects.\tnote{\ddag}\\
 
 \subsection{Demand Profiles}
 
-Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the epidemic, electricity demand patterns and power system operation.
+Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the pandemic, electricity demand patterns and power system operation.
 
 In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_profile!. Both of them obtain relevant data from file \verb!<market_name>_rto_load.csv! in the data hub.
 
@@ -1122,7 +1131,7 @@ Such modifications are obtained by changing property values of certain objects u
 \newpage
 \section{Baseline Estimation} \label{sec:baseline}
 
-
+Baseline refers to the basis of comparison with or without certain factor. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
 
 \covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, the function calculates the load baseline of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument Method to alter calculation method (\verb!'date', 'week', 'backcast'!), or DateRangeCovid to change the output date range.
 
@@ -1304,7 +1313,7 @@ output = cal_abnormal_price_index(market, varargin)
 \section{Regression Analysis} \label{sec:regression}
 
 \subsection{Regression Methodology}
-To interpret the changes in electricity consumption during epidemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account. 
+To interpret the changes in electricity consumption during pandemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account. 
 
 Restried Vector Autoregression (Restricted VAR) models are implemented in \covemda. Restricted VAR models are powerful tools for multivariate time series analysis with complex correlations.
 
