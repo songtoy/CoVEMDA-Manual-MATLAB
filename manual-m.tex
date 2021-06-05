@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 \usepackage{ifpdf}
 \usepackage{booktabs}
@@ -141,16 +141,16 @@ It was believed that the analysis on the cross-domain data might provided great 
 Therefore, a more comprehensive MATLAB toolbox named CoVEMDA was motivated for analysis. Based on COVID-EMDA+ Dataset, CoVEMDA is designed for functionalities including \textbf{Data Visualization}, \textbf{Baseline Estimation} and \textbf{Regression Analysis}, as well as other useful supplementary functions.
 \subsection{Features}
 \begin{itemize}
-    \item[$\bullet$] Data Source. CoVEMDA toolbox is initially developed to supprt COVID-EMDA+ Dataset. COVID-EMDA+ cross-domain dataset involves electricity market data, public health data, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for CoVEMDA\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
-    \item[$\bullet$] Data visualization. Visualization of almost all the data fields are implemented in the form of one-click (or one-line, to be specific) function, despite the variation of date range.
-    \item[$\bullet$] Baseline estimation. Conventional methods for baseline estimation including date and week alignment are introduced in CoVEMDA, while an \textbf{Ensemble Backcast Model} could provide better estimation with more valuable information.
-    \item[$\bullet$] Regression analysis. Cross-domain factors to be concerned, a Restricted Vector Auto Regression model is implemented in the toolbox, tailored for both the power system operators and the policy makers.
+    \item[$\bullet$] Data Source. CoVEMDA toolbox is initially developed to support COVID-EMDA+ Dataset. COVID-EMDA+ cross-domain dataset involves electricity market data, public health data, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for CoVEMDA\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
+    \item[$\bullet$] Data Visualization. CoVEMDA toolbox provide flexible implementation of Visualization of almost all the data fields, with flexible design of despite the variation of date range.
+    \item[$\bullet$] Baseline Estimation. Conventional methods for baseline estimation including date and week alignment are introduced in CoVEMDA, while an \textbf{Ensemble Backcast Model} could provide better estimation with more valuable information.
+    \item[$\bullet$] Regression Analysis. Cross-domain factors to be concerned, a Restricted Vector Auto Regression model is implemented in the toolbox, tailored for both the power system operators and the policy makers.
 \end{itemize}
 
 
 \subsection{Support Team}
 
-Together with COVID-EMDA dataset, this project is a collaboration of our group members under the supervision of Prof. Haiwang Zhong at Tsinghua University and Prof. Le Xie at Texas A\&M University. The support team keeps processing, correcting and updating the data every day. Yet the final responsibility for CoVEMDA Toolbox should be assign to the group leading by Prof. Zhong at Tsinghua University.
+Together with COVID-EMDA dataset, this project is a collaboration of our group members under the supervision of Prof. Le Xie at Texas A\&M University and Prof. Haiwang Zhong at Tsinghua University. The support team keeps processing, correcting and updating the data every day.
 
 \begin{figure}[!ht]
     \centering
@@ -217,7 +217,13 @@ SOFTWARE.
 \section{Getting Started} \label{sec:start}
 
 \subsection{System Requirements}
-To use \covemda~Toolbox you will need: MATLAB\textsuperscript{\tiny \textregistered} version 9.8 (R2020a). 
+To use \covemda~Toolbox you will need:
+\begin{itemize}
+    \item MATLAB\textsuperscript{\tiny \textregistered} version 9.8 (R2020a)
+    \item Deep Learning Toolbox\textsuperscript{\tiny TM} version 14.0
+    \item Statistics and Machine Learning Toolbox\textsuperscript{\tiny TM} version 11.7
+    \item Financial Toolbox\textsuperscript{\tiny TM} version 5.15
+\end{itemize}
 
 \small\emph{
 \begin{enumerate}[NOTE 1]
@@ -303,10 +309,123 @@ Our distribution containing COVID-EMDA data hub and toolbox can be obtained from
 \clearpage
 \subsection{Illustrative Examples}
 
-\begin{itemize}
-  \item Backcast: 
-  \item Regression Analysis: 
-\end{itemize}
+\subsubsection{Baseline Estimation with Ensemble Backcast Model}
+
+\covemda{} provides an efficient tool for load baseline estimation: ensemble backcast model. The corresponding function \verb!cal_baseline! and \verb!plot_baseline! enables the user to calculate and visualize the electricity consumption level without the impact of the pandemic. See Sec.\ref{sec:baseline} for more information.
+
+For example, to calculate the baseline of NYISO, the user may enter: (command output omitted)
+
+\begin{Code}
+>> t=cal_baseline('nyiso')
+
+t =
+
+  5x2 table
+
+    quantile        result    
+    ________    ______________
+
+       0.1      {151x25 table}
+      0.25      {151x25 table}
+       0.5      {151x25 table}
+      0.75      {151x25 table}
+       0.9      {151x25 table}
+\end{Code}
+
+Access data for q=0.5:
+
+\begin{Code}
+>> t.result{3}
+
+ans =
+
+  151x25 table
+
+       date       00:00    01:00    02:00    ...    22:00    23:00
+    __________    _____    _____    _____    ...    _____    _____
+
+    2020-02-01    15416    14908    14592    ...    16605    15727
+    2020-02-02    15304    14793    14456    ...    16608    15735
+    ...
+    2020-06-30    16119    15376    14959    ...    18524    17146
+\end{Code}
+
+If the user needs to train a new model with less networks:
+
+\begin{Code}
+>> t_retrain=cal_baseline('caiso','TrainModel',1,'ModelNum',[10,8]);
+Training, 10 models in total.
+--Training Model #1, number of hidden units: 34  60.
+--Model #1 trained, MAPE: 2.69%
+--Training Model #2, number of hidden units: 29  52.
+--Model #2 trained, MAPE: 3.04%
+...
+--Training Model #9, number of hidden units: 33  54.
+--Model #9 trained, MAPE: 3.27%
+--Training Model #10, number of hidden units: 35  59.
+--Model #10 trained, MAPE: 2.86%
+Testing, 10 models in total.
+--Running Model #1.
+--Running Model #2.
+...
+--Running Model #9.
+--Running Model #10.
+Predicting, 8 models in total.
+--Running Model #9.
+--Running Model #7.
+--Running Model #5.
+--Running Model #4.
+--Running Model #3.
+--Running Model #2.
+--Running Model #1.
+--Running Model #10.
+
+t_retrain =
+
+  5x2 table
+
+    quantile        result    
+    ________    ______________
+
+       0.1      {151x25 table}
+      0.25      {151x25 table}
+       0.5      {151x25 table}
+      0.75      {151x25 table}
+       0.9      {151x25 table}
+\end{Code}
+
+Summary of the newly trained model can be found at:
+\begin{center}
+    \verb!<CoVEMDA_root_directory>\data_temp\backcast\models\caiso_rto\Model_<timestamp>\Summary.csv!
+\end{center}
+
+If the user needs to visualize different baselines: (command output omitted)
+
+\begin{Code}
+>> handles=plot_baseline('nyiso','DateRangeCovid','2020-04-01');
+>> handles{6}.Color='#d95319';
+\end{Code}
+
+Add the observed demand data to the graph and adjust x-axis labels:
+
+\begin{Code}
+>> handle=plot_demand('nyiso','DateRange','2020-04-01','DisplayName',
+   'observed','Color','#edb120');
+>> ax=gca;
+>> ax.XTickLabel=strcat(string([0:2:22,23]),":00");
+\end{Code}
+
+The result is displayed in Figure~\ref{fig:backcast_eg}.
+
+\begin{figure}
+  \centering
+  \noindent\includegraphics[width=0.8\textwidth]{figures/example_backcast.jpg}
+  \caption{Example: Baseline and Observed Demand of NYISO} \label{fig:backcast_eg}
+\end{figure}
+
+
+
+\subsubsection{Regression Analysis}
 
 
 
@@ -434,42 +553,77 @@ It is recommended to check the following table to get some knowledge of data rel
 
 \subsection{Generation Mix}
 
-In this section, we provide two typical tools to display the generation data of U.S. electricity markets. After the COVID-19 outbreak, the total generation as well as generation share of each market in U.S. varied. In order to analyse this change, we may observe the generation data in scale of time or of generation fuels. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
+After the COVID-19 outbreak, the total generation as well as generation share of each market in U.S. varied. In order to analyse this change, we may observe the generation data in scale of time or of generation fuels. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
 
-In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub.
-
-
-\subsubsection{plot generation mix}
-
-This function plots the generation mix of a market within specified date range. Like \verb!area!, it returns the area objects of the curve for further modification.
+In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Function \verb!plot_generation_mix! plots the generation mix data in the form of filled areas, and function \verb!plot_renewable_share! plots the renewable share data in the form of a line chart. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub. See Sec.\ref{plot_generation_mix} and Sec.\ref{plot_renewable_share} for more detail.
 
 \begin{Code}
-  ar = plot_generation_mix(market,Name,Value)
-\end{Code}
-
-This function is based on \matlab{} function \verb!area!.
-
-By default, the function plots the generation mix of the specified market from 2017-01-01 to 2020-07-15, with month resampling.
-
-\begin{Code}
-  >> plot_generation_mix('spp');
+>> plot_generation_mix('spp');
 \end{Code}
 
 \begin{figure}
   \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/plot_generation_mix_example1.jpg}
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_plot_generation_mix.jpg}
   \caption{Generation Mix of SPP} \label{fig:vis_1}
 \end{figure}
 
-And the result is displayed in Figure~\ref{fig:vis_1}. Different color blocks demonstrate different fuel kinds as shown in legends. The area of each block shows the electric generation of each kind of fuel. In this figure, we may see that the main generation structure change is caused by the quantity of wind power generation.
- Additional optional input arguments can be used to set date range and resampling options. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_gene_mix_option}. See the help for \verb!plot_generation_mix! for details.
- \newpage
+One possible output of function \verb!plot_generation_mix! with default settings is displayed in Figure~\ref{fig:vis_1}. Different color blocks demonstrate different fuel kinds as shown in legends. The area of each block shows the electric generation of each kind of fuel. In this figure, we may see that the main generation structure change is caused by the quantity of wind power generation.
+
+
+
+\subsection{Demand Profiles}
+
+Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the pandemic, electricity demand patterns and power system operation.
+
+In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_curve!. Function \verb!plot_demand! plots the load data in the form of a line chart, and function \verb!plot_daily_demand_curve! plots the demand distribution curve in the form of multiple areas. Both of them obtain relevant data from file \verb!<market_name>_<city_name>_load.csv! in the data hub. See Sec.\ref{plot_demand} and Sec.\ref{plot_daily_demand_curve} for more detail.
+
+\begin{Code}
+>> plot_daily_demand_curve('nyiso');
+\end{Code}
+
+\begin{figure}
+  \centering
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_plot_daily_demand_curve.jpg}
+  \caption{Daily Demand Curve of NYISO} \label{fig:vis_1}
+\end{figure}
+
+One possible output of function \verb!plot_daily_demand_curve! with default settings is displayed in Figure~\ref{fig:vis_1}. In this plot, five edges of color blocks represent the five quantiles, \verb![0.05, 0.25, 0.5, 0.75, 0.95]! successively. As there are odd quantiles, the \verb!0.5! quantile is displayed as the central line. The outer light blue area represents the variation of \verb!0.05~0.95!, and the inner less-light blue area represents \verb!0.25~0.75!, to better illustrate the variation of electricity demand in the date range.
+
+
+
+\subsection{Price Distribution}
+
+In this section, we provide two typical tools to display the electricity price in U.S. After the COVID-19 outbreak, electricity price become harder to trace. In order to trace the change of electricity price, we may observe the price data of different markets in U.S. and organize them into plots. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
+
+In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plot_price_distribution!. Function \verb!plot_price! plots the price data in the form of a line chart, and function \verb!plot_price_distribution! plots the price distribution in the form of a histogram. Both of them obtain relevant data from file \\\verb!<market_name>_<city_name>_lmp.csv! in the data hub. See Sec.\ref{plot_price} and Sec.\ref{plot_price_distribution} for more detail.
+
+
+
+\subsection{Mobility}
+
+Mobility is a factor directly related with the pandemic. Here 'mobility' means the number of visits to business premises, indicating the level of commercial activities. During COVID-19, the mobility in various sectors have experienced dramatic reduction, which is one of the first signals of the outbreak.
+
+In \covemda{}, the mobility data for three sectors are provided: \verb!Restaurant_Recreation!, \verb!Grocery_Pharmacy! and \verb!Retail!. Unlike other functions in this section, here the data are focused on \textbf{seven major cities}: Los Angeles(\verb!la!), Houston(\verb!houston!), Boston(\verb!boston!), New York City(\verb!nyc!), Chicago(\verb!chicago!), Philadelphia(\verb!phila!) and Kansas City(\verb!kck!). All the data above are obtained from file \verb!<market_name>_<city_name>_patterns.csv! and can be visualized by function \verb!plot_mobility!. See Sec.\ref{plot_mobility} for more detail.
+
+
+
+\subsection{Functions}
+
+\subsubsection{\texttt{plot\_generation\_mix}}\label{func:plot_generation_mix}
+
+\begin{Code}
+function ar=plot_generation_mix(market,varargin)
+\end{Code}
+
+Function \verb!plot_generation_mix! plots the generation mix of a market within specified date range. Like \verb!area!, it returns the area objects of the curve for further modification. This function is based on \matlab{} function \verb!area!.
+
+By default, this function plots the generation mix of the specified market from 2017-01-01 to 2020-07-15 with month resampling. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_generation_mix} for a full list of arguments.
 
 \begin{table}[!ht]
 \centering
 \begin{threeparttable}
-\caption{Plot Generation Mix Option}
-\label{tab:plot_gene_mix_option}
+\caption{Plot Generation Mix Options}
+\label{tab:plot_generation_mix}
 \footnotesize
 \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
 \toprule
@@ -486,58 +640,45 @@ Example & \verb!{'2017-01-01','2020-07-15'}!\\
 & \verb!["2020-02-01","2020-04-30"]!\\
 \end{tabular}\\
 \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+\midrule
 ResampleBin & \begin{tabular}[t]{l}
 string\\
 character vectors\\
-\end{tabular} & Binning scheme for resampling. \tnote{\dag}\\
+\end{tabular} & Binning scheme for resampling.\\
 & & \begin{tabular}[t]{l @{ -- } l}
 Default & \verb!'month'!.\\
 \end{tabular}\\
 \midrule
-ColorMap & \begin{tabular}[t]{l}
-table\\
-structure array\\
-string array\\
-cell array of character vectors\\
-\end{tabular} & Colors of all the areas in the plot. \tnote{\ddag}\\
-& & \begin{tabular}[t]{l}
-Default --\\
-\verb!["coal","gas","oil","nuclear","hydro",!\\
-\verb!"wind","solar","other","import";!\\
-\verb!"#a67a6d","#f69850","#b35711","#3f9b98",!\\
-\verb!"#a0d8f1","#73c698","#ffbd4a",!\\
-\verb!"#b4b4b4","white"]!\\
-\end{tabular}\\
-\midrule
-Others & & Modifications of the area objects.\tnote{\ddag}\\
+Others & & See Sec.\ref{plot_area}.\\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-    \scriptsize
-    \item [\dag] {See also \verb!groupsummary!.}
-    \item [\ddag] {See also \verb!Area Properties!.}
-\end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-\subsubsection{plot renewable share}
 
-This function plots the renewable share curve of a market within specified date range. Like \verb!plot!, it returns the line objects of the curve for further modification.
+
+\subsubsection{\texttt{plot\_renewable\_share}}\label{func:plot_renewable_share}
 
 \begin{Code}
-  p = plot_renewable_share(market,Name,Value)
+function p=plot_renewable_share(market,varargin)
 \end{Code}
 
-This function is based on \matlab{} function \verb!plot!.
+Function \verb!plot_renewable_share! plots the renewable share curve of a market within specified date range. Like \verb!plot!, it returns the line objects of the curve for further modification. This function is based on \matlab{} function \verb!plot!.
 
-By default, the function plots the renewable share of the specified market from 2017-01-01 to 2020-07-15, with no resampling.Additional optional input arguments can be used to set date range, resampling options and resampling methods. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_renewable_share_option}. See the help for \verb!plot_renewable_share! for details.
-\clearpage
+By default, this function plots the renewable share of the specified market from 2017-01-01 to 2020-07-15, with no resampling. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_renewable_share} for a full list of arguments.
 
 \begin{table}[!ht]
 \centering
 \begin{threeparttable}
-\caption{Plot Renewable Share Options}
-\label{tab:plot_renewable_share_option}
+\caption{Plot Renewable Share, Plot Demand and Plot Price Options}
+\label{tab:plot_renewable_share}
 \footnotesize
 \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
 \toprule
@@ -554,10 +695,18 @@ Example & \verb!{'2017-01-01','2020-07-15'}!\\
 & \verb!["2020-02-01","2020-04-30"]!\\
 \end{tabular}\\
 \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+\midrule
 ResampleBin & \begin{tabular}[t]{l}
 string\\
 character vectors\\
-\end{tabular} & Binning scheme for resampling. \tnote{\dag}\\
+\end{tabular} & Binning scheme for resampling. \\
 & & \begin{tabular}[t]{l @{ -- } l}
 Default & \verb!'none'!.\\
 \end{tabular}\\
@@ -570,48 +719,41 @@ Default & \verb!'none'!.\\
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-Others & & Modifications of the line objects.\tnote{\ddag}\\
+Others & & See Sec.\ref{plot_line_chart}.\\
 \bottomrule
 \end{tabular}
-\begin{tablenotes}
-    \scriptsize
-    \item [\dag] {See also \verb!groupsummary!.}
-    \item [\ddag] {See also \verb!Plot Properties!.}
-\end{tablenotes}
 \end{threeparttable}
 \end{table}
 
 
 
-
-
-
-
-
-
-\subsection{Demand Profiles}
-
-Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the pandemic, electricity demand patterns and power system operation.
-
-In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_profile!. Both of them obtain relevant data from file \verb!<market_name>_rto_load.csv! in the data hub.
-
-\subsubsection{plot demand}
-
-This function plots the demand curve of a market within specified date range. Like \verb!plot!, it returns the line object of the curve for further modification.
+\subsubsection{\texttt{plot\_demand}}\label{func:plot_demand}
 
 \begin{Code}
-  p = plot_demand(market, varargin);
+function p=plot_demand(market,varargin)
 \end{Code}
 
-This function is based on \matlab{} function \verb!plot!.
+Function \verb!plot_demand! plots the demand curve of a market within specified date range. Like \verb!plot!, it returns the line object of the curve for further modification. This function is based on \matlab{} function \verb!plot!.
 
-By default, the function plots the demand curve of the specified market from 2017-01-01 to 2020-07-15, with no resampling. Additional optional input arguments can be used to set date range and resampling options. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_demand_opt}. See the help for \verb!plot_demand! for details.
+By default, this function plots the demand curve of the specified market from 2017-01-01 to 2020-07-15, with no resampling. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_renewable_share} for a full list of arguments.
+
+
+
+\subsubsection{\texttt{plot\_daily\_demand\_curve}}\label{func:plot_daily_demand_curve}
+
+\begin{Code}
+function gr_handles=plot_daily_demand_curve(market,varargin)
+\end{Code}
+
+Function \verb!plot_daily_demand_curve! plots the daily demand curve of a market with specified quantiles. It returns all the objects in the plot for further modification. If there are odd quantiles, the central one is displayed as a line object. Otherwise all of them are displayed as area objects. This function is based on \matlab{} function \verb!area! and \verb!plot!.
+
+By default, this function plots the daily demand curve of the specified market from 2017-01-01 to 2020-07-15 with the five quantiles representing its variation: \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_daily_demand_curve} for a full list of arguments.
 
 \begin{table}[!ht]
   \centering
   \begin{threeparttable}
-    \caption{Plot Demand Options}
-    \label{tab:plot_demand_opt}
+    \caption{Plot Daily Demand Curve Options}
+    \label{tab:plot_daily_demand_curve}
     \footnotesize
     \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
       \toprule
@@ -628,10 +770,139 @@ By default, the function plots the demand curve of the specified market from 201
                 & \verb!["2020-02-01","2020-04-30"]!  \\
       \end{tabular}                         \\
       \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \midrule
+      Quantile   & \begin{tabular}[t]{l}
+        numeric vector                  \\
+      \end{tabular} & Cumulative probabilities. \\
+                  &                            & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. \\
+      \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{plot_quantile}.\\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{plot\_price}}\label{func:plot_price}
+
+\begin{Code}
+function p=plot_price(market,varargin)
+\end{Code}
+
+Function \verb!plot_price! plots the price curve of a market within specified date range. Like \verb!plot!, it returns the line objects of the curve for further modification. This function is based on \matlab{} function \verb!plot!.
+
+By default, this function plots the price of the specified market from 2017-01-01 to 2020-07-15, with no resampling. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_renewable_share} for a full list of arguments.
+
+
+
+\subsubsection{\texttt{plot\_price\_distribution}}\label{func:plot_price_distribution}
+
+\begin{Code}
+function H=plot_price_distribution(market,varargin)
+\end{Code}
+
+Function \verb!plot_price_distribution! plots the price distribution of a market. This function is based on \matlab{} function \verb!plot!.
+
+By default, this function plots the price distribution of the specified market from 2017-01-01 to 2020-07-15. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_price_distribution} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Plot Price Distribution Options}
+    \label{tab:plot_price_distribution}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name        & Type                       & Description                                        \\
+      \midrule
+      DateRange   & \begin{tabular}[t]{l}
+        datetime array                  \\
+        string array                    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time.                                     \\
+                  &                            & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
+        Example & \verb!{'2017-01-01','2020-07-15'}!  \\
+                & \verb!["2020-02-01","2020-04-30"]!  \\
+      \end{tabular}                         \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{plot_histogram}.\\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{plot\_mobility}}\label{func:plot_mobility}
+
+\begin{Code}
+function p=plot_mobility(market,varargin)
+\end{Code}
+
+Function \verb!plot_mobility! plots the appointed mobility curve of one of the seven cities. Like \verb!plot!, it returns the line object of the curve for further modification. This function is based on \matlab{} function \verb!plot!.
+
+By default, this function plots the mobility data of the retail sector in the specified city from 2019-12-30 to 2020-11-22, with no resampling. Additional name-value pair arguments are available for modifications. See Table~\ref{tab:plot_mobility} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Plot Mobility Options}
+    \label{tab:plot_mobility}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name        & Type                       & Description                                        \\
+      \midrule
+      DateRange   & \begin{tabular}[t]{l}
+        datetime array                  \\
+        string array                    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time.                                     \\
+                  &                            & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
+        Example & \verb!{'2017-01-01','2020-07-15'}!  \\
+                & \verb!["2020-02-01","2020-04-30"]!  \\
+      \end{tabular}                         \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & Corresponding city of the specified market. \\
+      \end{tabular}                         \\
+      \midrule
+      Sector & \begin{tabular}[t]{l}
+        string            \\
+        character vectors \\
+      \end{tabular} & The sector to be plotted. Can be assigned as \verb!'Retail'!, \verb!'Restaurant_Recreaction'! or \verb!'Grocery_Pharmacy'!.    \\
+                  &                            & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'Retail'!. \\
+      \end{tabular}                         \\
+      \midrule
       ResampleBin & \begin{tabular}[t]{l}
         string            \\
         character vectors \\
-      \end{tabular} & Binning scheme for resampling. \tnote{\dag}        \\
+      \end{tabular} & Binning scheme for resampling. \\
                   &                            & \begin{tabular}[t]{l @{ -- } l}
         Default & \verb!'none'!. \\
       \end{tabular}                         \\
@@ -639,79 +910,138 @@ By default, the function plots the demand curve of the specified market from 201
       ResampleMethod & \begin{tabular}[t]{l}
         string            \\
         character vectors \\
-      \end{tabular} & Computation method for resampling. \tnote{\dag}        \\
+      \end{tabular} & Computation method for resampling. \\
                   &                            & \begin{tabular}[t]{l @{ -- } l}
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-      Others      &                            & Modifications of the line object.\tnote{\ddag}    \\
+      Others & & See Sec.\ref{plot_line_chart}.\\
       \bottomrule
     \end{tabular}
-    \begin{tablenotes}
-      \scriptsize
-      \item [\dag]  {See also \verb!groupsummary!.}
-      \item [\ddag] {See also \verb!Line Properties!.}
-    \end{tablenotes}
   \end{threeparttable}
 \end{table}
 
 
 
-
-
-\subsubsection{plot daily demand curve}
-
-This function plots the daily demand curve of a market with specified quantiles. It returns all the objects in the plot for further modification. If there are odd quantiles, the central one is displayed as a line object. Otherwise all of them are displayed as area objects.
+\subsubsection{\texttt{plot\_area}}\label{func:plot_area}
 
 \begin{Code}
-  ar = plot_daily_demand_curve(market, varargin);
+function ar=plot_area(t,varargin)
 \end{Code}
 
-This function is based on \matlab{} function \verb!area! and \verb!plot!.
+Function \verb!plot_area! is the subfunction of \verb!plot_generation_mix!. As the modification of \matlab{} function \verb!area!, several default settings are altered for appearance. The first column of table \verb!t! is appointed as labels of the x-axis, and all the other columns contain data to be plotted. See Table~\ref{tab:plot_area} for a full list of arguments.
 
-By default, the function plots the daily demand curve of the specified market from 2017-01-01 to 2020-07-15 with the five quantiles representing its variation: \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. For instance, use the default settings:
+\begin{table}[!ht]
+\centering
+\begin{threeparttable}
+\caption{Plot Area Options}
+\label{tab:plot_area}
+\footnotesize
+\begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+\toprule
+Name & Type & Description \\
+\midrule
+      EdgeColor & \begin{tabular}[t]{l}
+        RGB triplet \\
+        hexadecimal color code \dots
+      \end{tabular} & Color of the edges.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'none'!. \\
+      \end{tabular}                         \\
+\midrule
+ColorMap & \begin{tabular}[t]{l}
+table\\
+structure array\\
+string array\\
+cell array of character vectors\\
+\end{tabular} & Colors of all the areas in the plot. \\
+& & \begin{tabular}[t]{l}
+Default --\\
+\verb!["coal","gas","oil","nuclear","hydro",!\\
+\verb!"wind","solar","other","import";!\\
+\verb!"#a67a6d","#f69850","#b35711","#3f9b98",!\\
+\verb!"#a0d8f1","#73c698","#ffbd4a",!\\
+\verb!"#b4b4b4","white"]!\\
+\end{tabular}\\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{plot\_line\_chart}}\label{func:plot_line_chart}
 
 \begin{Code}
-  >> plot_daily_demand_curve('nyiso');
+function p=plot_line_chart(t,varargin)
 \end{Code}
 
-\begin{figure}
-  \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_plot_daily_demand_curve.jpg}
-  \caption{Daily Demand Curve of NYISO} \label{fig:vis_1}
-\end{figure}
+Function \verb!plot_line_chart! is the subfunction of \verb!plot_demand!, \verb!plot_mobility!, \verb!plot_price! and \verb!plot_renewable_share!. As the modification of \matlab{} function \verb!plot!, several default settings are altered for appearance. The first column of table \verb!t! is appointed as labels of the x-axis, and the second column contains data to be plotted. See Table~\ref{tab:plot_line_chart} for a full list of arguments.
 
-And the result is displayed in Figure~\ref{fig:vis_1}. In this plot, five edges of color blocks represent the five quantiles, \verb![0.05, 0.25, 0.5, 0.75, 0.95]! successively. As there are odd quantiles, the \verb!0.5! quantile is displayed as the central line. The outer light blue area represents the variation of \verb!0.05~0.95!, and the inner less-light blue area represents \verb!0.25~0.75!, to better illustrate the variation of electricity demand in the date range.
+\begin{table}[!ht]
+\centering
+\begin{threeparttable}
+\caption{Plot Line Chart Options}
+\label{tab:plot_line_chart}
+\footnotesize
+\begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+\toprule
+Name & Type & Description \\
+\midrule
+      DisplayName & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Name (legend) to be displayed on the graph.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & Name of the table column. \\
+      \end{tabular}                         \\
+      \midrule
+      Color & \begin{tabular}[t]{l}
+        RGB triplet \\
+        hexadecimal color code \dots  \\
+      \end{tabular} & Color of the line.        \\
+                  &                            & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'#0072BD'!. \\
+      \end{tabular}                         \\
+      \midrule
+      LineWidth & positive numeric value & Width of the line.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!1!. \\
+      \end{tabular}                         \\
+      \midrule
+      LineStyle & character value & Style of the line.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'-'!. \\
+      \end{tabular}                         \\
+      \midrule
+      Marker & character value & Style of the marker.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'none'!. \\
+      \end{tabular}                         \\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+\end{table}
 
-Additional optional input arguments can be used to set date range, quantiles and plot options. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_dai_demand_opt}. See the help for \verb!plot_daily_demand_curve! for details.
-\clearpage
+
+
+\subsubsection{\texttt{plot\_quantile}}\label{func:plot_quantile}
+
+\begin{Code}
+function gr_handles=plot_quantile(t,varargin)
+\end{Code}
+
+Function \verb!plot_quantile! is the subfunction of \verb!plot_daily_demand_curve!. The intervals are represented with areas of different brightness, indicating the distribution. The first column of table \verb!t! is appointed as labels of the x-axis, and the rest columns contain quantiles to be plotted. See Table~\ref{tab:plot_quantile} for a full list of arguments.
+
 \begin{table}[!ht]
   \centering
   \begin{threeparttable}
-    \caption{Plot Daily Demand Curve Options}
-    \label{tab:plot_dai_demand_opt}
+    \caption{Plot Quantile Options}
+    \label{tab:plot_quantile}
     \footnotesize
     \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
       \toprule
       Name        & Type                       & Description                                        \\
-      \midrule
-      DateRange   & \begin{tabular}[t]{l}
-        datetime array                  \\
-        string array                    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time.                                     \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
-        Example & \verb!{'2017-01-01','2020-07-15'}!  \\
-                & \verb!["2020-02-01","2020-04-30"]!  \\
-      \end{tabular}                         \\
-      \midrule
-      Quantile   & \begin{tabular}[t]{l}
-        numeric vector                  \\
-      \end{tabular} & Cumulative probabilities. \tnote{\dag}  \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. \\
-      \end{tabular}                         \\
       \midrule
       Color & \begin{tabular}[t]{l}
         RGB triplet \\
@@ -732,225 +1062,67 @@ Additional optional input arguments can be used to set date range, quantiles and
         positive value            \\
       \end{tabular} & Width of the central line (if exists).       \\
                   &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!2.5!. \\
+        Default & \verb!1!. \\
       \end{tabular}                         \\
-      \midrule
-      Others      &      & Modifications of the area objects. \tnote{\ddag}    \\
       \bottomrule
     \end{tabular}
-    \begin{tablenotes}
-      \scriptsize
-      \item [\dag]  {See also \verb!quantile!.}
-      \item [\ddag] {See also \verb!Area Properties!.}
-    \end{tablenotes}
   \end{threeparttable}
 \end{table}
 
 
 
-
-
-\subsection{Price Distribution}
-
-In this section, we provide two typical tools to display the electricity price in U.S.  After the COVID-19 outbreak, electricity price become harder to trace. In order to trace the change of electricity price, we may observe the price data of different markets in U.S. and organize them into plots. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
-
-In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plotprice_distribution!. Both of them obtain relevant data from file \\\verb!<market_name>_rto_lmp.csv! in the data hub.
-
-\subsubsection{plot price}
-
-This function plots the price curve of a market within specified date range. Like \verb!plot!, it returns the line objects of the curve for further modification.
+\subsubsection{\texttt{plot\_histogram}}\label{func:plot_histogram}
 
 \begin{Code}
-  p = plot_price(market,Name,Value)
+function h=plot_histogram(t,varargin)
 \end{Code}
 
-This function is based on \matlab{} function \verb!plot!.
+Function \verb!plot_histogram! is the subfunction of \verb!plot_price_distribution!. As the modification of \matlab{} function \verb!histogram!, several default settings are altered for appearance. The first column of table \verb!t! is appointed as labels of the x-axis, and the second column contains data to be plotted. See Table~\ref{tab:plot_histogram} for a full list of arguments.
 
-By default, the function plots the price of the specified market from 2017-01-01 to 2020-07-15, with no resampling.Additional optional input arguments can be used to set date range, resampling options and resampling methods. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_price_option}. See the help for \verb!plot_price! for details.
-
-\begin{table}[!ht]
-\centering
-\begin{threeparttable}
-\caption{Plot Price Option}
-\label{tab:plot_price_option}
-\footnotesize
-\begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-\toprule
-Name & Type & Description \\
-\midrule
-DateRange & \begin{tabular}[t]{l}
-datetime array\\
-string array\\
-cell array of character vectors\\
-\end{tabular} & Range of time. \\
-& & \begin{tabular}[t]{l @{ -- } l}
-Default & \verb!{'2017-01-01','2020-07-15'}!.\\
-Example & \verb!{'2017-01-01','2020-07-15'}!\\
-& \verb!["2020-02-01","2020-04-30"]!\\
-\end{tabular}\\
-\midrule
-ResampleBin & \begin{tabular}[t]{l}
-string\\
-character vectors\\
-\end{tabular} & Binning scheme for resampling. \tnote{\dag}\\
-& & \begin{tabular}[t]{l @{ -- } l}
-Default & \verb!'none'!.\\
-\end{tabular}\\
-\midrule
-      ResampleMethod & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & Computation method for resampling. \tnote{\dag}        \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'mean'!. \\
-      \end{tabular}                         \\
-      \midrule
-Others & & Modifications of the line objects.\tnote{\ddag}\\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-    \scriptsize
-    \item [\dag] {See also \verb!groupsummary!.}
-    \item [\ddag] {See also \verb!Plot Properties!.}
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\subsubsection{plot price distribution}
-
-This function plots the price distribution of a market. 
-
-\begin{Code}
-  ar = plot_price_distribution(market, Name, Value);
-\end{Code}
-
-This function is based on \matlab{} function \verb!plot!.
-
-By default, the function plots the price distribution of the specified market from 2017-01-01 to 2020-07-15. For instance, use the default settings:
-
-\begin{Code}
-  >> plot_price_distribution('isone');
-\end{Code}
-
-\begin{figure}
-  \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example1.jpg}
-  \caption{Price Distribution of ISONE} \label{fig:vis_1}
-\end{figure}
-
-And the result is displayed in Figure~\ref{fig:vis_1}. 
-
-Additional optional input arguments can be used to set date range and other options. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_price_distribution_opt}. See the help for \verb!plot_price_distribution! for details.
-\clearpage
 \begin{table}[!ht]
   \centering
   \begin{threeparttable}
-    \caption{Plot Price Distribution Options}
-    \label{tab:plot_price_distribution_opt}
+    \caption{Plot Histogram Options}
+    \label{tab:plot_histogram}
     \footnotesize
     \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
       \toprule
       Name        & Type                       & Description                                        \\
       \midrule
-      DateRange   & \begin{tabular}[t]{l}
-        datetime array                  \\
-        string array                    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time.                                     \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
-        Example & \verb!{'2017-01-01','2020-07-15'}!  \\
-                & \verb!["2020-02-01","2020-04-30"]!  \\
+      DisplayName & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Name (legend) to be displayed on the graph.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & Name of the table column. \\
       \end{tabular}                         \\
       \midrule
-      Others      &      & Modifications of the histogram objects. \tnote{\dag}    \\
-      \bottomrule
-    \end{tabular}
-    \begin{tablenotes}
-      \scriptsize
-      \item [\dag] {See also \verb!Histogram Properties!.}
-    \end{tablenotes}
-  \end{threeparttable}
-\end{table}
-
-\subsection{Mobility}
-
-Mobility is a factor directly related with the pandemic. Here 'mobility' means the number of visits to business premises, indicating the level of commercial activities. During COVID-19, the mobility in various sectors have experienced dramatic reduction, which is one of the first signals of the outbreak.
-
-In \covemda{}, the mobility data for three sectors are provided: \verb!Restaurant_Recreation!, \verb!Grocery_Pharmacy! and \verb!Retail!. Unlike other functions in this section, here the data are focused on \textbf{seven major cities}: Los Angeles(\verb!la!), Houston(\verb!houston!), Boston(\verb!boston!), New York City(\verb!nyc!), Chicago(\verb!chicago!), Philadelphia(\verb!phila!) and Kansas City(\verb!kck!). All the data above are obtained from file \verb!<market_name>_<city_name>_patterns.csv! and can be visualized by function \verb!plot_mobility!.
-
-\subsubsection{plot mobility}
-
-This function plots the appointed mobility curve of one of the seven cities. Like \verb!plot!, it returns the line object of the curve for further modification.
-
-\begin{Code}
-  p = plot_mobility(city, varargin);
-\end{Code}
-
-This function is based on \matlab{} function \verb!plot!.
-
-By default, the function plots the mobility data of the retail sector in the specified city from 2019-12-30 to 2020-11-22, with no resampling. Additional optional input arguments can be used to set sector, date range and resampling options. Under this circumstance, the arguments should be in the form of name-value pairs. Valid parameter names are listed in Table~\ref{tab:plot_mob_opt}. See the help for \verb!plot_mobility! for details.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Plot Mobility Options}
-    \label{tab:plot_mob_opt}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name        & Type                       & Description                                        \\
-      \midrule
-      DateRange   & \begin{tabular}[t]{l}
-        datetime array                  \\
-        string array                    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time.                                     \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
-        Example & \verb!{'2017-01-01','2020-07-15'}!  \\
-                & \verb!["2020-02-01","2020-04-30"]!  \\
+      Normalization & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Method for data normalization. Can be assigned as \verb!'count'!, \verb!'probability'!, \verb!'countdensity'!, \verb!'pdf'!, \verb!'cumcount'! or \verb!'cdf'!.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'pdf'!. \\
       \end{tabular}                         \\
       \midrule
-      Sector & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & The sector to be plotted.        \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'Retail'!. \\
-        Example & \verb!'Retail'!. \\
-                & \verb!'Restaurant_Recreaction'! \\
-                & \verb!'Grocery_Pharmacy'!       \\
-      \end{tabular}                         \\
-      \midrule
-      ResampleBin & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & Binning scheme for resampling. \tnote{\dag}        \\
-                  &                            & \begin{tabular}[t]{l @{ -- } l}
+      EdgeColor & \begin{tabular}[t]{l}
+        RGB triplet \\
+        hexadecimal color code \dots
+      \end{tabular} & Color of the edges.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
         Default & \verb!'none'!. \\
       \end{tabular}                         \\
       \midrule
-      ResampleMethod & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & Computation method for resampling. \tnote{\dag}        \\
+      NumBins & \begin{tabular}[t]{l}
+        positive integer            \\
+      \end{tabular} & Number of bins.        \\
                   &                            & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'mean'!. \\
+        Default & \verb!50!. \\
       \end{tabular}                         \\
-      \midrule
-      Others      &                            & Modifications of the line object.\tnote{\ddag}    \\
       \bottomrule
     \end{tabular}
-    \begin{tablenotes}
-      \scriptsize
-      \item [\dag]  {See also \verb!groupsummary!.}
-      \item [\ddag] {See also \verb!Line Properties!.}
-    \end{tablenotes}
   \end{threeparttable}
 \end{table}
-
-
 
 
 
@@ -958,35 +1130,25 @@ By default, the function plots the mobility data of the retail sector in the spe
 
 \subsubsection{Basic Usage} \label{subsubsec:vis_basic}
 
-All functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name or city name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
+All functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
 
 \begin{center}
   \verb!'caiso' | 'ercot' | 'isone' | 'miso' | 'nyiso' | 'pjm' | 'spp'!
 \end{center}
 
-And the city name is specified as one of the seven abbreviations:
-
-\begin{center}
-  \verb!'la' | 'houston' | 'boston' | 'nyc' | 'chicago' | 'phila' | 'kck'!
-\end{center}
-
-For \verb!plot_mobility! where the city name needs to be specified, the corresponding market name is not necessary. The function automatically recognizes the market which the city is in, as long as it is one of the seven cities listed above.
-
 All the other input arguments should be in the form of \textbf{name-value pairs} for the function to correctly recognize.
 
 \begin{Code}
-  plot_demand(market, 'argument_name1', argument_value1,
-  'argument_name2', argument_value2, ...);
+plot_demand(market,'argument_name1',argument_value1,'argument_name2',
+argument_value2,...);
 \end{Code}
 
-Valid parameter names for each function above are listed in Table~\ref{tab:plot_gene_mix_option} to~\ref{tab:plot_mob_opt}. Pay attention that \verb!plot_demand!, \verb!plot_renewable_share!, \verb!plot_price! and \verb!plot_mobility! are based on \matlab{} function \verb!plot!, \verb!plot_generation_mix! is based on \verb!area! and \verb!plot_price_distribution! based on \verb!histogram!. For those functions, all the name-value pair arguments are passed to corresponding \matlab{} functions except the ones listed in the table. For \verb!plot_daily_demand_curve!, however, the arguments are mainly passed to \verb!area!. If there are odd quantiles, the central one is displayed with \verb!plot! and only \verb!'Color'! and \verb!'LineWidth'! are passed to it.
+The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in Sec.\ref{subsubsec:vis_cus}.
 
-The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in~\ref{subsubsec:vis_cus}.
-
-As long as the market name (or the city name) is given, a basic version of the desired plot can be simply obtained. For example, to plot the price distribution histogram of ISONE, just enter
+As long as the market name is given, a basic version of the desired plot can be simply obtained. For example, to plot the price distribution histogram of ISONE, just enter
 
 \begin{Code}
-  >> plot_price_distribution('isone');
+>> plot_price_distribution('isone');
 \end{Code}
 
 \begin{figure}
@@ -995,65 +1157,47 @@ As long as the market name (or the city name) is given, a basic version of the d
   \caption{Example: Price Distribution of ISONE} \label{fig:vis_eg1}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg1}. By default, the price distribution histogram of ISONE from 2017-01-01 to 2020-07-15 is plotted. If the user wants to change the date range, parameter \verb!DateRange! should be specified. For example, to plot the renewable share curve of NYISO from February to April in 2020, the user may enter
+The result is displayed in Figure~\ref{fig:vis_eg1}. By default, the price distribution histogram of ISONE from 2017-01-01 to 2020-07-15 is plotted. If the user wants to change the date range, parameter \verb!DateRange! should be specified. In addition, some of the functions provide an option for resampling data, making them more flexible to use. For example, to plot the average price of every month in 2019, the user may enter
 
 \begin{Code}
-  >> plot_renewable_share('nyiso', 'DateRange', {'2020-02-01',
-      '2020-04-30'});
+ >> plot_price('nyiso','DateRange',{'2019-01-01','2019-12-31'},'ResampleBin'
+    ,'month','ResampleMethod','mean');
 \end{Code}
 
 \begin{figure}
   \centering
   \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example2.jpg}
-  \caption{Example: Renewable Share of NYISO} \label{fig:vis_eg2}
+  \caption{Example: Average Price of NYISO} \label{fig:vis_eg2}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg2}, where the desired renewable share curve is plotted.
+The result is displayed in Figure~\ref{fig:vis_eg2}, where the desired price trend is plotted.
 
-Some of the functions provide an option for resampling data, making them more flexible to use. For example, to plot the average price of every month in 2019, the user may enter
-
-\begin{Code}
-  >> plot_price('nyiso', 'DateRange', {'2019-01-01', '2019-12-31'},
-  'ResampleBin', 'month', 'ResampleMethod', 'mean');
-\end{Code}
-
-\begin{figure}
-  \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example3.jpg}
-  \caption{Example: Average Price of NYISO} \label{fig:vis_eg3}
-\end{figure}
-
-The result is displayed in Figure~\ref{fig:vis_eg3}, where the desired price trend is plotted.
-
-Like \verb!plot!, all the functions can be used more than once to plot multiple curves in one figure. For example, to plot the demand curves of NYISO in 2018, 2019 and 2020 with week alignment, first calculate the corresponding date range:
+Like \verb!plot!, all the functions can be used more than once to plot multiple curves in one figure. For example, to plot the demand curves of NYISO in 2018, 2019 and 2020 with date alignment, first calculate the corresponding date range:
 
 \begin{Code}
-  >> dr_2020 = datetime('2020-2-1'):datetime('2020-4-30');
-  >> dr_2019 = cal_baseline(dr_2020, 'Method', 'week');
-  >> dr_2018 = cal_baseline(dr_2020, 'Method', 'week',
-  'YearDuration', 2);
-  >> dr_2017 = cal_baseline(dr_2020, 'Method', 'week',
-  'YearDuration', 3);
+>> dr_2020=datetime('2020-2-1'):datetime('2020-4-30');
+>> dr_2019=dr_2020-calyears(1);
+>> dr_2018=dr_2019-calyears(1);
 \end{Code}
 
 Thus the desired date ranges for 2018, 2019 and 2020 are \verb!dr_2018!, \verb!dr_2019! and \verb!dr_2020! correspondingly. Now plot the demand curves:
 
 \begin{Code}
-  >> plot_demand('nyiso', 'DateRange', dr_2018, 'DisplayName',
-  '2018', 'LineStyle', ':', 'Color', '#939598');
-  >> plot_demand('nyiso', 'DateRange', dr_2019, 'DisplayName',
-  '2019', 'LineStyle', '--', 'Color', '#D95319');
-  >> plot_demand('nyiso', 'DateRange', dr_2020, 'DisplayName',
-  '2020', 'Color', '#0072BD', 'LineWidth', 2.5);
+>> plot_demand('nyiso','DateRange',dr_2018,'DisplayName','2018','LineStyle',
+   ':','Color','#939598');
+>> plot_demand('nyiso','DateRange',dr_2019,'DisplayName','2019','LineStyle',
+   '--','Color','#D95319');
+>> plot_demand('nyiso','DateRange',dr_2020,'DisplayName','2020','Color',
+   '#0072BD','LineWidth',2.5);
 \end{Code}
 
 \begin{figure}
   \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example4.jpg}
-  \caption{Example: Demand Curves of NYISO} \label{fig:vis_eg4}
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example3.jpg}
+  \caption{Example: Demand Curves of NYISO} \label{fig:vis_eg3}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg4}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In~\ref{subsubsec:vis_cus}, the modification of plots is explored further.
+The result is displayed in Figure~\ref{fig:vis_eg3}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In Sec.\ref{subsubsec:vis_cus}, the modification of plots is explored further.
 
 
 
@@ -1064,64 +1208,65 @@ Like \matlab{}, there are mainly two approaches in \covemda{} to modifying a plo
 In the last example in~\ref{subsubsec:vis_basic}, several properties (label, color and line width) of the three lines are modified by passing name-value pair arguments to the function. In this way, the user is able to integrate multiple modifications in one line of code, making it concise and simple. For example, to display markers at data points, the user may enter
 
 \begin{Code}
-  >> plot_price('nyiso', 'ResampleBin', 'month', 'Marker', 'o');
+>> plot_price('nyiso','DateRange',{'2019-01-01','2019-12-31'},'ResampleBin'
+   ,'month','ResampleMethod','mean','Marker','o');
 \end{Code}
 
 \begin{figure}
   \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example5.jpg}
-  \caption{Example: Average Price of NYISO (with Markers)} \label{fig:vis_eg5}
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example4.jpg}
+  \caption{Example: Average Price of NYISO (with Markers)} \label{fig:vis_eg4}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg5}, where all the data points are marked with a symbol 'o'. Any other marker symbol can be used in the same way, as long as it is recognized by \verb!plot!.
+The result is displayed in Figure~\ref{fig:vis_eg4}, where all the data points are marked with a symbol 'o'. Any other marker symbol can be used in the same way, as long as it is recognized by \verb!plot!.
 
 However, it is difficult to obtain detailed control of the plot by merely passing arguments to the functions, which is why sometimes we also need to change property values after plotting the figure. For example, to change the default display range of y-axis, the user may enter
 
 \begin{Code}
-  >> plot_daily_demand_curve('nyiso');
-  >> ax = gca;
-  >> ax.YLim = [0, 4];
+>> plot_daily_demand_curve('nyiso');
+>> ax=gca;
+>> ax.YLim=[0,4];
+\end{Code}
+
+\begin{figure}
+  \centering
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example5_1.jpg}
+  \caption{Example: Daily Demand Curve of NYISO (Before Changing range of y-axis)} \label{fig:vis_eg5_1}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example5_2.jpg}
+  \caption{Example: Daily Demand Curve of NYISO (After Changing range of y-axis)} \label{fig:vis_eg5_2}
+\end{figure}
+
+The result is displayed in Figure~\ref{fig:vis_eg5_1} and~\ref{fig:vis_eg5_2}, where the range of y-axis is enlarged. As the modified property belongs to the axes of the figure rather than area or line objects, the command \verb!ax = gca! is utilized to access the axes. Also, \verb!ylim([0, 4])! (using the function \verb!ylim!) has the same effect as \verb!ax.YLim = [0, 4]! in this case.
+
+Under some circumstances, there may exist more than one object in the graph, which is common when using functions concerning \verb!area!. For example, to highlight renewable energy in a generation mix graph, the user may enter
+
+\begin{Code}
+>> ar=plot_generation_mix('spp');
+>> ar(1).FaceColor='#868686';
+>> ar(2).FaceColor='#acacac';
+>> ar(4).FaceColor='#7f7f7f';
+>> ar(5).FaceColor='#6b6b6b';
 \end{Code}
 
 \begin{figure}
   \centering
   \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example6_1.jpg}
-  \caption{Example: Daily Demand Curve of NYISO (Before Changing range of y-axis)} \label{fig:vis_eg6_1}
+  \caption{Example: Generation Mix of SPP (Before Highlighting Renewables)} \label{fig:vis_eg6_1}
 \end{figure}
 
 \begin{figure}
   \centering
   \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example6_2.jpg}
-  \caption{Example: Daily Demand Curve of NYISO (After Changing range of y-axis)} \label{fig:vis_eg6_2}
+  \caption{Example: Generation Mix of SPP (After Highlighting Renewables)} \label{fig:vis_eg6_2}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg6_1} and~\ref{fig:vis_eg6_2}, where the range of y-axis is enlarged. As the modified property belongs to the axes of the figure rather than area or line objects, the command \verb!ax = gca! is utilized to access the axes. Also, \verb!ylim([0, 4])! (using the function \verb!ylim!) has the same effect as \verb!ax.YLim = [0, 4]! in this case.
+The result is displayed in Figure~\ref{fig:vis_eg6_1} and~\ref{fig:vis_eg6_2}, where the color of all fuel types except hydro, solar and wind are changed to gray after the graph is plotted. Therefore, the renewables are visually highlighted.
 
-Under some circumstances, there may exist more than one object in the graph, which is common when using functions concerning \verb!area!. For example, to highlight renewable energy in a generation mix graph, the user may enter
-
-\begin{Code}
-  >> ar = plot_generation_mix('spp');
-  >> ar(1).FaceColor = '#868686';
-  >> ar(2).FaceColor = '#acacac';
-  >> ar(4).FaceColor = '#7f7f7f';
-  >> ar(5).FaceColor = '#6b6b6b';
-\end{Code}
-
-\begin{figure}
-  \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example7_1.jpg}
-  \caption{Example: Generation Mix of SPP (Before Highlighting Renewables)} \label{fig:vis_eg7_1}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \noindent\includegraphics[width=0.8\textwidth]{figures/visualization_example7_2.jpg}
-  \caption{Example: Generation Mix of SPP (After Highlighting Renewables)} \label{fig:vis_eg7_2}
-\end{figure}
-
-The result is displayed in Figure~\ref{fig:vis_eg7_1} and~\ref{fig:vis_eg7_2}, where the color of all fuel types except hydro, solar and wind are changed to gray after the graph is plotted. Therefore, the renewables are visually highlighted.
-
-Such modifications are obtained by changing property values of certain objects using dot notation. For a list of properties, see \verb!Axes Properties!, \verb!Line Properties!, \verb!Area Properties! and \verb!Histogram Properties!. See the help for each function for details.
+Such modifications are obtained by changing property values of certain objects using dot notation. For a list of properties, see \verb!Axes Properties!, \verb!Line Properties!, \verb!Area Properties! and \verb!Histogram Properties!.
 
 
 
@@ -1133,25 +1278,15 @@ Such modifications are obtained by changing property values of certain objects u
 
 Baseline refers to the basis of comparison with or without certain factor. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
 
-\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, the function calculates the load baseline of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument Method to alter calculation method (\verb!'date', 'week', 'backcast'!), or DateRangeCovid to change the output date range.
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. Unlike \verb!cal_baseline!, here multiple methods can be appointed for comparison. See Sec.\ref{cal_baseline} and Sec.\ref{plot_baseline} for more detail.
 
-In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. The user can appoint the methods to be plotted by specifying the value of name-value pair argument Method. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin, ResampleMethod! as well, just like the visualization functions in Sec.~\ref{sec:visual}.
 
-In practical use, all the other arguments to be mentioned below are actually passed by the two high-level functions above. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function \verb!cal_baseline! like this:
-
-\begin{Code}
->> cal_baseline('nyiso', 'TrainModel', 1, 'ModelNum', [10, 3]);
-\end{Code}
 
 \subsection{Date and Week Alignment}
 
+Date alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same date and month in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_dates!. See Sec.\ref{cal_baseline_by_dates} for more detail.
 
-
-If \verb!Method! is specified as \verb!date!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same date and month in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_dates!.
-
-If \verb!Method! is specified as \verb!week!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same week and day of week in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_week_index!.
-
-If either of those two situations occurs, no extra name-value pairs need to be specified.
+Week index alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same week and day of week in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_week_index!. See Sec.\ref{cal_baseline_by_week_index} for more detail.
 
 
 
@@ -1172,17 +1307,187 @@ where
   \item $T_{mdq},H_{mdq},S_{mdq}$ are temperature, humidity and wind speed within the selected quantiles $q$.
   \item $E$ is the estimated GDP growth rate.
 \end{itemize}
-We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing. With the backcast estimations, the daily reduction in electricity consumption $r_{md}$ is calculated as follows,
-\begin{equation}
-  \label{eqn:ensemble}
-  r_{md}=(1-\frac{1}{\hat L_{md}}\cdot \frac{1}{T}\sum\limits_{t=1}^TL_{mdt})\times 100\%, \forall m,d,
-\end{equation}
-where $T=24$ is the total number of hours in one day, and $L_{mdt}$ is the electricity consumption metered at time $t$ on month $m$ and day $d$. Equation~\ref{eqn:ensemble} compares the ensemble backcast and actual electricity consumption results, and can be readily extended to interval estimations by adjusting the ensemble backcast result.
+We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing.
+
+In \covemda{}, this calculation process is performed by function \verb!cal_baseline_by_backcast!. See Sec.\ref{cal_baseline_by_backcast} for more detail.
 
 
-If \verb!Method! is specified as \verb!backcast!, function \verb!cal_baseline! calculates the load baseline by either training new models or using existing models. This calculation process is performed by \covemda{} low-level function \verb!cal_baseline_by_backcast!, and other complementary functions. Valid parameter names are listed in Table~\ref{tab:back_opt}.
 
-Function \verb!cal_baseline_by_backcast! consists of 3 or 6 steps (depends on whether to train models or not). To be more specific, if the user chooses to train a new model, the function
+\subsection{Abnormal Price Index}\label{subsec:abnormal_price_index}
+
+Locational marginal prices play a crucial role in electricity markets and contribute to balancing generation and demand efficiently. Since these prices are relatively stochastic in nature, it is unsatisfactory to analyze them in the same way as electricity demand\footnote{the uncertainty intervals will be very wide}. Thus, the abnormal price index is developed to provide a more reliable tool for price analysis, which is defined as follows,
+\begin{equation*}
+  I(\lambda_{ymdt})=|2\hat F_m(\lambda_{ymdt})-1|, \forall y,m,d,t,
+\end{equation*}
+where $\lambda_{ymdt}$ is the day-ahead locational marginal price of year $y$, month $m$, day $d$, and hour $t$. $I(\cdot)$ is the proposed index, which lies between zero and one. This index quantifies the abnormality of a typical price, and a larger index value represents a more unusual observation. $\hat F_m(\cdot)$ is the cumulative distribution function for the prices in month $m$.\footnote{Which are more stable for analyzing these price changes. See the reason in \cite{quantitaveassess}}.
+
+The statistical meaning of the above index is explained by the probability density function shown in Figure~\ref{fig:abnormal_price_index}. For a given price, the index donates a possibility that measures how close this price is to the mean value. For example, if a price observation is located within the 25\% and 75\% quantiles, we obtain an index value below 0.5, which is considered normal.
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/abnormal_price_index.png}
+  \caption{Statistical illustration of the proposed abnormal price index. The basic idea is to show how near a price observation is to the mean value. This index can eliminate some stochastic factors when assessing price changes. The index value lies in [0,1], and a larger value means a higher possibility of abnormality.}
+  \label{fig:abnormal_price_index}
+\end{figure}
+
+In \covemda{}, the abnormal price index is calculated by function \verb!cal_abnormal_price_index!. More detail is available in Sec.\ref{cal_abnormal_price_index}.
+
+
+
+\subsection{Excess Change Rate of Renewable}\label{subsec:excess_change_rate}
+
+One simple way to quantify the changes of renewable share during the COVID-19 pandemic is to make a linear assumption of its growth rate. Based on the assumption, the \textbf{excess change rate} is defined as the relative change rate between the observed renewable share and this estimation:
+
+\begin{equation*}
+    \eta=\left(\frac{r_{2020}}{2r_{2019}-r_{2018}}-1\right)\times100\%
+\end{equation*}
+
+where $\eta$ is the excess change rate, and $r_{2018}\sim r_{2020}$ are the market shares of renewable energy observed in 2018, 2019 and 2020.
+
+In \covemda{}, the excess change rate of renewable in various markets is provided by function \verb!cal_excess_change_rate!. This function reads the generation mix data from the data hub, and calculates the corresponding excess change rate according to the formula above. More detail is available in Sec.\ref{cal_excess_change_rate}.
+
+
+
+\subsection{Functions}
+
+\subsubsection{\texttt{cal\_baseline}}\label{func:cal_baseline}
+
+\begin{Code}
+function t_output=cal_baseline(market,varargin)
+\end{Code}
+
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, this function returns the load baseline (as a table or several tables if multiple quantiles are calculated) of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument \verb!Method! to alter calculation method (\verb!'date', 'week', 'backcast'!), or \verb!DateRangeCovid! to change the output date range.
+
+In practice, since this function calls the following low-level functions concerning baseline estimation, all the other arguments are passed on to them. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function like this:
+
+\begin{Code}
+>> cal_baseline('nyiso','TrainModel',1,'ModelNum',[10,3]);
+\end{Code}
+
+Although argument \verb!TrainModel! and \verb!ModelNum! belong to the low-level function \verb!cal_baseline_by_backcast!, it is recommended to specify them when calling high-level function \verb!cal_baseline!. See Table~\ref{tab:cal_baseline} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Baseline Options}
+    \label{tab:cal_baseline}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      Method & \begin{tabular}[t]{l}
+        character array \\
+        string    \\
+      \end{tabular} & Method for baseline estimation, specified as \verb!'date'!, \verb!'week'! or \verb!'backcast'!.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'backcast'!. \\
+      \end{tabular}                         \\
+      \midrule
+      DateRangeCovid & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for baseline estimation.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2020-02-01','2020-06-30'}!. \\
+        Example & \verb!{'2020-04-01','2020-04-30'}!  \\
+                & \verb!'2020-04-01'!  \\
+      \end{tabular} \\
+      \midrule
+      Others & & See Sec.\ref{cal_baseline_by_dates}, Sec.\ref{cal_baseline_by_week_index} and Sec.\ref{cal_baseline_by_backcast}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{plot\_baseline}}\label{func:plot_baseline}
+
+\begin{Code}
+function gr_handles=plot_baseline(market,varargin)
+\end{Code}
+
+\covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, plots them in one graph, and returns the handles of graphic objects. The user can appoint the methods to be plotted by specifying the value of name-value pair argument \verb!Method!. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. If so, \verb!cal_baseline! is called for each estimation method.
+
+The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin!, \verb!ResampleMethod! as well, just like the visualization functions in Sec.\ref{sec:visual}. See Table~\ref{tab:plot_baseline} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Plot Baseline Options}
+    \label{tab:plot_baseline}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      Method & \begin{tabular}[t]{l}
+        cell array of character vectors \\
+        string array \\
+      \end{tabular} & Methods for baseline estimation, specified as \verb!'date'!, \verb!'week'! and(or) \verb!'backcast'!.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!["backcast", "date", "week"]!. \\
+        Example & \verb!'backcast'! \\
+      \end{tabular}                         \\
+      \midrule
+      ResampleBin & \begin{tabular}[t]{l}
+        string            \\
+        character vectors \\
+      \end{tabular} & Binning scheme for resampling. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'none'!. \\
+      \end{tabular}                         \\
+      \midrule
+      ResampleMethod & \begin{tabular}[t]{l}
+        string            \\
+        character vectors \\
+      \end{tabular} & Computation method for resampling. \\
+      & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'mean'!. \\
+      \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{cal_baseline}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_dates}}\label{func:cal_baseline_by_dates}
+
+\begin{Code}
+function t_output=cal_baseline_by_dates(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!date!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same date and month in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_dates!. It returns a table containing the dates and load baseline data.
+
+The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_week\_index}}\label{func:cal_baseline_by_week_index}
+
+\begin{Code}
+function t_output=cal_baseline_by_week_index(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!week!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same week and day of week in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_week_index!. It returns a table containing the dates and load baseline data.
+
+The only additional argument here is \verb!City! as well, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_backcast}}\label{func:cal_baseline_by_backcast}
+
+\begin{Code}
+function t_YPreds=cal_baseline_by_backcast(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!backcast!, function \verb!cal_baseline! calculates the load baseline by either training new models or using existing models. This calculation process is performed by function \verb!cal_baseline_by_backcast!. If only one single quantile is appointed, this function returns a table containing the dates and load baseline data like the others. However, if multiple quantiles are appointed, this function returns a table whose first column is the quantiles, and each element in the second column is a table containing dates and baseline for corresponding quantile. All parameter names are listed in Table~\ref{tab:cal_baseline_by_backcast}.
+
+In general, this function consists of 3 or 6 steps (depends on whether to train models or not). If the user chooses to train a new model, the function
 
 \begin{enumerate}
     \item imports training data and splits training and testing set (\verb!backcast_import_data!);
@@ -1204,12 +1509,20 @@ If the user chooses not to train models but to use pre-trained models, the funct
 \begin{table}[!ht]
   \centering
   \begin{threeparttable}
-    \caption{Calculate Baseline By Backcast Options}
-    \label{tab:back_opt}
+    \caption{Cal Baseline By Backcast Options}
+    \label{tab:cal_baseline_by_backcast}
     \footnotesize
     \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
       \toprule
       Name & Type & Description \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
       \midrule
       TrainModel & integer value & Train (1) or not train (0) models.   \\
        & & \begin{tabular}[t]{l @{ -- } l}
@@ -1237,21 +1550,6 @@ If the user chooses not to train models but to use pre-trained models, the funct
         Default & \verb![800, 200]!. \\
       \end{tabular}                         \\
       \midrule
-      numHiddenUnits & two-element numeric vector & The number of hidden units in the two full connection layers. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb![32, 64]!. \\
-      \end{tabular}                         \\
-      \midrule
-      TrainVerbose & integer value & Indicator to display training progress information. No display(0), brief display(1) or detailed display(2). Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 1. \\
-      \end{tabular}                         \\
-      \midrule
-      RandVariation & double value in (0,1) & Relative range (1-RandVariation, 1+RandVariation) of random variation of model parameters numHiddenUnits for scan training. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 0.2. \\
-      \end{tabular}                         \\
-      \midrule
       SaveModel & integer value & Indicator to save trained models in \matlab{} .asv files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
        & & \begin{tabular}[t]{l @{ -- } l}
         Default & 1. \\
@@ -1266,6 +1564,98 @@ If the user chooses not to train models but to use pre-trained models, the funct
        & & \begin{tabular}[t]{l @{ -- } l}
         Default & 1. \\
       \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{backcast_import_data}, Sec.\ref{backcast_scan_training}, Sec.\ref{backcast_test_model} and Sec.\ref{backcast_scan_prediction}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{backcast\_import\_data}}\label{func:backcast_import_data}
+
+\begin{Code}
+function [t_XTrainandtest,t_YTrainandtest,t_XTrainandvalid,t_YTrainandvalid,
+t_XTest,t_YTest]=backcast_import_data(market,dr_Trainandtest,varargin)
+\end{Code}
+
+Function \verb!backcast_import_data! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of importing data for training, validation and testing of the ensemble backcast model. \verb!t_XTrainandtest! and \verb!t_YTrainandtest! are the training (including validation) and testing set, and the others are training-validation set and testing set separated from each other, i.e., the union of the last four equals the first two.
+
+The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{backcast\_scan\_training}}\label{func:backcast_scan_training}
+
+\begin{Code}
+function t_net=backcast_scan_training(t_XTrainandvalid,t_YTrainandvalid,
+model_num,varargin)
+\end{Code}
+
+Function \verb!backcast_scan_training! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of training the deep neural networks. This function trains \verb!model_num! deep neural networks with two hidden layers and random number of hidden units, determined by argument \verb!numHiddenUnits! and \verb!RandVariation!. The return value of this function is a table of all the trained models, along with their parameters, validation accuracy and corresponding scalers. All parameter names are listed in Table~\ref{tab:backcast_scan_training}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Backcast Scan Training Options}
+    \label{tab:backcast_scan_training}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      numHiddenUnits & two-element numeric vector & The number of hidden units in the two full connection layers. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![32, 64]!. \\
+      \end{tabular}                         \\
+      \midrule
+      TrainVerbose & integer value & Indicator to display training progress information. No display(0), brief display(1) or detailed display(2). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      RandVariation & double value in (0,1) & Relative range (1-RandVariation, 1+RandVariation) of random variation of model parameters numHiddenUnits for scan training. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0.2. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{backcast\_test\_model}}\label{func:backcast_test_model}
+
+\begin{Code}
+function [t_net_all,t_net_sel]=backcast_test_model(t_net_all,t_XTest,
+t_YTest,model_sel,varargin);
+\end{Code}
+
+Function \verb!backcast_test_model! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of selecting the best deep neural networks. This function selects the best \verb!model_sel! models using the testing set. \verb!t_net_sel! is a table of the selected models, and \verb!t_net_all! is still the table of all models, with the information (testing accuracy, sign of selection) of the test.
+
+The only additional argument here is \verb!TrainVerbose!, which is the same as the one in Sec.\ref{backcast_scan_training}.
+
+
+
+\subsubsection{\texttt{backcast\_scan\_prediction}}\label{func:backcast_scan_prediction}
+
+\begin{Code}
+function t_YPreds=backcast_scan_prediction(t_net,t_XPred,varargin)
+\end{Code}
+
+Function \verb!backcast_scan_prediction! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of calculating baseline using the ensemble backcast model. It returns a table containing the dates and load baseline data. All parameter names are listed in Table~\ref{backcast_scan_prediction}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Backcast Scan Prediction Options}
+    \label{tab:backcast_scan_prediction}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
       \midrule
       Quantile & numeric vector in (0,1) & Quantiles to be calculated in scan prediction. \\
        & & \begin{tabular}[t]{l @{ -- } l}
@@ -1283,28 +1673,100 @@ If the user chooses not to train models but to use pre-trained models, the funct
 \end{table}
 
 
-\subsection{Abnormal Price Index}
 
-Locational marginal prices play a crucial role in electricity markets and contribute to balancing generation and demand efficiently. Since these prices are relatively stochastic in nature, it is unsatisfactory to analyze them in the same way as electricity demand\footnote{the uncertainty intervals will be very wide}. Thus, the abnormal price index is developed to provide a more reliable tool for price analysis, which is defined as follows,
-\begin{equation*}
-  I(\lambda_{ymdt})=|2\hat F_m(\lambda_{ymdt})-1|, \forall y,m,d,t,
-\end{equation*}
-where $\lambda_{ymdt}$ is the day-ahead locational marginal price of year $y$, month $m$, day $d$, and hour $t$. $I(\cdot)$ is the proposed index, which lies between zero and one. This index quantifies the abnormality of a typical price, and a larger index value represents a more unusual observation. $\hat F_m(\cdot)$ is the cumulative distribution function for the prices in month $m$.\footnote{Which are more stable for analyzing these price changes. See the reason in \cite{quantitaveassess}}.
-
-The statistical meaning of the above index is explained by the probability density function shown in Figure~\ref{fig:abnormal_price_index}. For a given price, the index donates a possibility that measures how close this price is to the mean value. For example, if a price observation is located within the 25\% and 75\% quantiles, we obtain an index value below 0.5, which is considered normal.
-\begin{figure}
-  \centering
-  \includegraphics[width=.8\textwidth]{figures/abnormal_price_index.png}
-  \caption{Statistical illustration of the proposed abnormal price index. The basic idea is to show how near a price observation is to the mean value. This index can eliminate some stochastic factors when assessing price changes. The index value lies in [0,1], and a larger value means a higher possibility of abnormality.}
-  \label{fig:abnormal_price_index}
-\end{figure}
+\subsubsection{\texttt{cal\_abnormal\_price\_index}}\label{func:cal_abnormal_price_index}
 
 \begin{Code}
-output = cal_abnormal_price_index(market, varargin)
+function output=cal_abnormal_price_index(market,varargin)
 \end{Code}
-\subsection{Excess Change Rate of Renewable}
+
+Function \verb!cal_abnormal_price_index! calculates the proposed abnormal index in Sec.\ref{subsec:abnormal_price_index}. The output is a table containing abnormal price index and corresponding date. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Abnormal Price Index and Cal Distribution Diff Options}
+    \label{tab:cal_abnormal_price_index}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      DateRange & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for index calculation. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2020-03-01','2020-07-15'}!. \\
+        Example & \verb!{'2020-01-01','2020-12-31'}!  \\
+                & \verb!["2020-01-01","2020-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
 
 
+
+\subsubsection{\texttt{cal\_distribution\_diff}}\label{func:cal_distribution_diff}
+
+\begin{Code}
+function output=cal_distribution_diff(market,varargin)
+\end{Code}
+
+Function \verb!cal_distribution_diff! provides an indicator for the difference of price distribution with data from the previous year as baseline. It adopts Wasserstein distance as the measurement method. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
+
+
+
+\subsubsection{\texttt{cal\_excess\_change\_rate}}\label{func:cal_excess_change_rate}
+
+\begin{Code}
+function output=cal_excess_change_rate(market,varargin)
+\end{Code}
+
+Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in Sec.\ref{subsec:excess_change_rate}. The return value is the proposed excess change rate of renewable of the specified market. All parameter names are listed in Table~\ref{tab:cal_excess_change_rate}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Excess Change Rate Options}
+    \label{tab:cal_excess_change_rate}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      DateRange & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for index calculation. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
+        Example & \verb!{'2017-01-01','2020-12-31'}!  \\
+                & \verb!["2017-01-01","2020-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
 
 
 
@@ -1375,9 +1837,21 @@ The full procedure of building the restricted VAR model mainly contains four ste
 
 
 
+\subsection{Functions}
+
+
+
 %------------------------------------------------
 \newpage
 \section{Acknowledgments} \label{sec:thanks}
+
+We would like to acknowledge 
+This work is supported in part by funding from Student Research Training Project of Tsinghua University.
+
+We would also like to acknowledge the suggestions by professors and judges during Tsinghua University Challenge Cup Competition. We are also grateful to Niklas Kolbe, Mr.Brackets.
+
+Last but not least, thanks to the support of EI-LAB of Department of Electrical Engineering
+
 
 
 
@@ -1388,8 +1862,109 @@ The full procedure of building the restricted VAR model mainly contains four ste
 \begin{appendices}
 
 \newpage
-\section{Glossary} \label{sec:}
+\section{\covemda{}~Files and Functions} \label{sec:}
 
+\subsection{Directory Layout}
+
+\covemda{} root directory contains four folders and two .m files. The two files are \verb!install_covemda.m! and \verb!uninstall_covemda.m! for installation and uninstallation of the toolbox, and folder \verb!high_level!, \verb!low_level! and \verb!basic_operations! contain scripts of all other \covemda{} functions.
+
+Folder \verb!data_temp! contains the temporary files of the toolbox, with two subfolders named \verb!backcast! and \verb!COVID-EMDA!. Folder \verb!COVID-EMDA! contains .csv files obtained from the COVID-EMDA+ data hub, and folder \verb!backcast\supplementary! contains supplementary files for ensemble backcast model (gdp.csv, etc.). Folder \verb!backcast\models! contain pre-trained backcast models and their summary files, sorted in the following format:
+\begin{center}
+    \verb!models\<market_name>_<city_name_or_rto>\Model_<timestamp>\Models.mat!
+    \verb!models\<market_name>_<city_name_or_rto>\Model_<timestamp>\Summary.csv!
+\end{center}
+
+
+
+\subsection{Functions}
+
+Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found in the root directory, \covemda{} functions are typically divided into three levels: high level, low level and basic operations, which are also the corresponding folder names. All the high-level and low-level functions are illustrated above at the end of Sec.\ref{sec:visual}, Sec.\ref{sec:baseline} and Sec.\ref{sec:regression}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{threeparttable}
+    \caption{\covemda{} High-level Functions}
+    \label{tab:high_level_func}
+    \footnotesize
+    \begin{tabular}{ll}
+        \toprule
+        Name & Description \\
+        \midrule
+        \hyperref[func:cal_abnormal_price_index]{\texttt{cal\_abnormal\_price\_index}} & calculates the abnormal price index in Sec.\ref{subsec:abnormal_price_index} \\
+        \hyperref[func:cal_baseline]{\texttt{cal\_baseline}} & estimates the load baseline with three methods \\
+        \hyperref[func:cal_distribution_diff]{\texttt{cal\_distribution\_diff}} & calculates the Wasserstein difference of price distribution \\
+        \hyperref[func:cal_excess_change_rate]{\texttt{cal\_excess\_change\_rate}} & calculates the excess change rate of renewable in Sec.\ref{subsec:excess_change_rate} \\
+        \hyperref[func:plot_baseline]{\texttt{plot\_baseline}} & plots the load baseline with different methods \\
+        \hyperref[func:plot_daily_demand_curve]{\texttt{plot\_daily\_demand\_curve}} & plots the demand curve with variation in one day \\
+        \hyperref[func:plot_demand]{\texttt{plot\_demand}} & plots the demand curve \\
+        \hyperref[func:plot_generation_mix]{\texttt{plot\_generation\_mix}} & plots the generation mix \\
+        \hyperref[func:plot_mobility]{\texttt{plot\_mobility}} & plots the mobility curve \\
+        \hyperref[func:plot_price]{\texttt{plot\_price}} & plots the price curve \\
+        \hyperref[func:plot_price_distribution]{\texttt{plot\_price\_distribution}} & plots the price distribution histogram \\
+        \hyperref[func:plot_renewable_share]{\texttt{plot\_renewable\_share}} & plots the renewable share curve \\
+        \bottomrule
+    \end{tabular}
+    \end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]
+    \centering
+    \begin{threeparttable}
+    \caption{\covemda{} Low-level Functions}
+    \label{tab:low_level_func}
+    \footnotesize
+    \begin{tabular}{ll}
+        \toprule
+        Name & Description \\
+        \midrule
+        \hyperref[func:backcast_import_data]{\texttt{backcast\_import\_data}} & imports data for ensemble backcast model \\
+        \hyperref[func:backcast_scan_prediction]{\texttt{backcast\_scan\_prediction}} & calculates output of the backcast model for corresponding input \\
+        \hyperref[func:backcast_scan_training]{\texttt{backcast\_scan\_training}} & trains the neural networks for the backcast model \\
+        \hyperref[func:backcast_test_model]{\texttt{backcast\_test\_model}} & selects the best neural networks to form the backcast model \\
+        \hyperref[func:cal_baseline_by_backcast]{\texttt{cal\_baseline\_by\_backcast}} & calculates load baseline by ensemble backcast model \\
+        \hyperref[func:cal_baseline_by_dates]{\texttt{cal\_baseline\_by\_dates}} & calculates load baseline by date alignment \\
+        \hyperref[func:cal_baseline_by_week_index]{\texttt{cal\_baseline\_by\_week\_index}} & calculates load baseline by week alignment \\
+        \hyperref[func:plot_area]{\texttt{plot\_area}} & plots filled areas \\
+        \hyperref[func:plot_histogram]{\texttt{plot\_histogram}} & plots histogram \\
+        \hyperref[func:plot_line_chart]{\texttt{plot\_line\_chart}} & plots lines \\
+        \hyperref[func:plot_quantile]{\texttt{plot\_quantile}} & plots data with variation \\
+        \bottomrule
+    \end{tabular}
+    \end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]
+    \centering
+    \begin{threeparttable}
+    \caption{\covemda{} Basic-operation Functions}
+    \label{tab:basic_op_func}
+    \footnotesize
+    \begin{tabular}{ll}
+        \toprule
+        Name & Description \\
+        \midrule
+        \verb!basic_backcast_import_models! & imports pre-trained backcast models for baseline estimation \\
+        \verb!basic_backcast_save_file! & saves trained models and summary files \\
+        \verb!basic_backcast_split_train_and_test! & splits training-validation set and testing set for each backcast model \\
+        \verb!basic_backcast_split_train_and_valid! & splits training set and validation set for each network \\
+        \verb!basic_backcast_train_and_validate! & trains and validates each network \\
+        \verb!basic_calc! & basic four operations for tables \\
+        \verb!basic_filter! & applies filter to table \\
+        \verb!basic_fitdist! & fits probability distribution for table \\
+        \verb!basic_gen_root_dir! & generates the root directory of \covemda{} \\
+        \verb!basic_group! & groups the table by non-date columns \\
+        \verb!basic_max! & calculates the maximum value of all columns or rows \\
+        \verb!basic_mean! & calculates the average value of all columns or rows \\
+        \verb!basic_min! & calculates the minimum value of all columns or rows \\
+        \verb!basic_plot_preprocess_table! & resamples and groups the table for plotting \\
+        \verb!basic_quantile! & calculates the quantile of columns or rows \\
+        \verb!basic_read! & reads files from COVID-EMDA+ \\
+        \verb!basic_resample! & resamples the table by date \\
+        \verb!basic_sum! & sums up all columns or rows \\
+        \bottomrule
+    \end{tabular}
+    \end{threeparttable}
+\end{table}
 
 \end{appendices}
 
