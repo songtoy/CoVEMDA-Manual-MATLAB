@@ -57,6 +57,10 @@
 \newcommand{\covemda}{CoVEMDA}
 \newcommand{\covemdagithuburl}{https://github.com/tamu-engineering-research/COVID-EMDA}
 \newcommand{\matlab}{\textsc{MATLAB}}
+\newcommand{\covver}{1.0}
+\newcommand{\EILAB}{{\sc EILAB}}
+\newcommand{\eilab}{{Energy Intelligence Laboratory (\EILAB{})}}
+
 
 \definecolor{BackgroundColor}{HTML}{e7f2fa}
 \definecolor{SepColor}{HTML}{6ab0de}
@@ -91,7 +95,7 @@
 
 
 %%% title setting
-\title{User's Manual for\\\textbf{CoVEMDA Toolbox}}
+\title{User's Manual for\\\textbf{\covemda{} Toolbox}}
 \author{}
 \date{\today}
 
@@ -102,10 +106,20 @@
 \makeatletter
     \begin{titlepage}
         \begin{center}
-            \includegraphics[width=.7\textwidth]{figures/covid_emda_logo.JPG}%
+            \includegraphics[width=.7\textwidth]{figures/covemda_logo.png}
+            \includegraphics[width=.3\textwidth]{figures/covid_emda_logo.JPG}%
             \vskip 0.5ex%
-            {\huge \@title \par}
-
+            {\huge \@title \par}%
+            \vskip 2em%
+            {\LARGE Version \covver{} \par}%
+            \vskip 1.5em%
+            {\large \@date \par}%
+            
+\vfill
+            \includegraphics[width=.5\textwidth]{figures/ei-lab.png}\\
+{\scriptsize
+\copyright~2020--2021~\eilab{}\\
+All Rights Reserved}
         \end{center}
     \end{titlepage}
 \makeatother
@@ -121,13 +135,13 @@
 \section*{Website}
 \addcontentsline{toc}{section}{Website}
 
-\url{https://github.com/tamu-engineering-research/COVID-EMDA}
-
+\vskip 3em
 \begin{center}
-	\noindent\includegraphics[width=0.5\textwidth]{figures/covid_emda_logo.JPG}
+\url{https://github.com/tamu-engineering-research/COVID-EMDA}
 \end{center}
+\vskip 5em
 
-
+This manual is accompanied by the above website. The website refers to the GitHub Repository of COVID-EMDA+ Datahub and \covemda{} Toolbox. The Repository provides the released dataset, the source code of toolbox and a series of supplementary materials -- which should be useful to readers.
 
 %-------------------------------
 \newpage
@@ -135,7 +149,8 @@
 
 \subsection{Background}
 
-With high contagiousness and long incubation period\cite{who2021}, the COVID-19 pandemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the operation of power system has been greatly threatened by the pandemic, Tsinghua University collaborated with Texas A\&M Engineering University developed the COVID-EMDA+ Dataset, to track and measure the impact of COVID-19 on the electricity sector.
+With high contagiousness and long incubation period\cite{who2021}, the COVID-19 pandemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the operation of power system has been greatly threatened by the pandemic, Tsinghua University and Texas A\&M University developed the COVID-EMDA+ Dataset, to track and measure the impact of COVID-19 on the electricity sector.
+
 
 It was believed that the analysis on the cross-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for researchers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a unique case-study on the correlations among various factors in complex power system.
 
@@ -144,11 +159,12 @@ Therefore, a more comprehensive MATLAB toolbox named CoVEMDA was motivated for a
 \begin{itemize}
     \item[$\bullet$] Data Source. \covemda{} is initially developed to support COVID-EMDA+ Dataset. COVID-EMDA+ cross-domain dataset involves electricity market data, public health data, weather data and mobility data for \textbf{all the existing U.S. electricity marketplaces} and some typical cities\footnote{Which refers to Los Angeles, Boston, New York City, Philadelphia, Chicago, Kansas City, Houston} in these markets. The data released is under strict quality control. To be note, the external data is acceptable for \covemda{}\footnote{This feature should be useful for users with poor connections with official COVID-EMDA+ on GitHub Repository}.
     
-    \item[$\bullet$] Data Visualization. \covemda{} provides implementation of data visualization under various typical usage scenarios.
-    
     \item[$\bullet$] Baseline Estimation. To get the benchmark against which the impact of COVID-19 is quantified, electricity consumption without the pandemic should be estimated first. Conventional methods for baseline estimation including date and week alignment are introduced in \covemda{}. Meanwhile an \textbf{Ensemble Backcast Model} is carefully designed for more accurate result.
     
     \item[$\bullet$] Regression Analysis. To explore the mechanism underneath the impact of pandemic, several potential influencing factors, namely, public health, social distancing, and commercial activity, are investigated. In account for the multi-dimensional relationship complexity and the variance temporal dynamics presented by those factors, several city-specific restricted vector autoregression models are calibrated in \covemda{}.
+    
+    \item[$\bullet$] Data Visualization. \covemda{} provides implementation of data visualization under various typical usage scenarios. This includes graphically presenting the changes in generation share of each electricity market over time, displaying the daily electricity demand distribution curve, etc. This feature is designed to be simple and convenient, while keeping the code easy to modify.
+    
 \end{itemize}
 
 \newpage
@@ -276,7 +292,7 @@ To be note, this option required \href{https://git-scm.com/}{Git}/\href{https://
 \clearpage
 \subsection{Illustrative Examples}
 
-\subsubsection{Baseline Estimation with Ensemble Backcast Model}
+\subsubsection{Baseline Estimation with Ensemble Backcast Model}\label{subsec:eg_baseline}
 
 \covemda{} provides an efficient tool for load baseline estimation: ensemble backcast model. The corresponding function \verb!cal_baseline! and \verb!plot_baseline! enables the user to calculate and visualize the electricity consumption level without the impact of the pandemic. See Sec.\ref{sec:baseline} for more information.
 
@@ -317,69 +333,10 @@ ans =
     2020-06-30    16119    15376    14959    ...    18524    17146
 \end{Code}
 
-If the user needs to train a new model with less networks:
+If the user needs to visualize the baseline: (command output omitted)
 
 \begin{Code}
->> t_retrain=cal_baseline('caiso','TrainModel',1,'ModelNum',[10,8]);
-Training, 10 models in total.
---Training Model #1, number of hidden units: 34  60.
---Model #1 trained, MAPE: 2.69%
---Training Model #2, number of hidden units: 29  52.
---Model #2 trained, MAPE: 3.04%
-...
---Training Model #9, number of hidden units: 33  54.
---Model #9 trained, MAPE: 3.27%
---Training Model #10, number of hidden units: 35  59.
---Model #10 trained, MAPE: 2.86%
-Testing, 10 models in total.
---Running Model #1.
---Running Model #2.
-...
---Running Model #9.
---Running Model #10.
-Predicting, 8 models in total.
---Running Model #9.
---Running Model #7.
---Running Model #5.
---Running Model #4.
---Running Model #3.
---Running Model #2.
---Running Model #1.
---Running Model #10.
-
-t_retrain =
-
-  5x2 table
-
-    quantile        result    
-    ________    ______________
-
-       0.1      {151x25 table}
-      0.25      {151x25 table}
-       0.5      {151x25 table}
-      0.75      {151x25 table}
-       0.9      {151x25 table}
-\end{Code}
-
-Summary of the newly trained model can be found at:
-\begin{center}
-    \verb!<CoVEMDA_root_directory>\data_temp\backcast\models\caiso_rto\Model_<timestamp>\Summary.csv!
-\end{center}
-
-If the user needs to visualize different baselines: (command output omitted)
-
-\begin{Code}
->> handles=plot_baseline('nyiso','DateRangeCovid','2020-04-01');
->> handles{6}.Color='#d95319';
-\end{Code}
-
-Add the observed demand data to the graph and adjust x-axis labels:
-
-\begin{Code}
->> handle=plot_demand('nyiso','DateRange','2020-04-01','DisplayName',
-   'observed','Color','#edb120');
->> ax=gca;
->> ax.XTickLabel=strcat(string([0:2:22,23]),":00");
+>> plot_baseline('nyiso','Method','backcast');
 \end{Code}
 
 The result is displayed in Figure~\ref{fig:backcast_eg}.
@@ -429,20 +386,22 @@ Five major components are included in the data hub:
 \end{itemize}
 NOTE: For some categories, multiple data sources are carefully gathered to ensure accuracy.
 \subsection{Data Structure}
-This data hub mainly contains five components: source data, released data, supplementary resources, parser codes, and quick start tutorials. We navigate this data hub as shown in Figure~\ref{fig:filenavi}.
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=.8\textwidth]{figures/folder-structure-0725.png}
-	\caption{File Navigation.}
-	\label{fig:filenavi}
-\end{figure}
+This data hub mainly contains five components: source data, released data, supplementary resources, parser codes, and quick start tutorials. We navigate this data hub as follows.
+
+\begin{enumerate}
+    \item All the data source files are archived in folder \verb!data_source!, while the cleaned, processed data are stored in folder \verb!data_release!.
+    
+    Daily updates containing the latest data would be properly classified by location. The file name convention of COVID-EMDA+ is: \verb!MARKET_AREA_CATEGORY.csv!, e.g. \verb!nyiso_nyc_load.csv! is a dataset of load profile in New York City from 2017 to present.
+    \item Supplementary resources of several publication works and relevant projects including a series of extended data sources and analysis codes could be found in folder \verb!supplementary!.
+    \item Basic parser codes (written in Python) to handle the source data are implemented in folder \verb!parser!.
+    \item Some quick start for the dataset is also accessible in folder \verb!startup! and \verb!supplementary!.
+\end{enumerate}
 
 
-All the data source files are archived in folder \textit{data\_source}, while the cleaned, processed data are stored in folder \textit{data\_release}. Daily updates containing the latest data would be properly classified by location. The file name convention of COVID-EMDA+ is: \textbf{MARKET\_AREA\_CATEGORY.csv}, e.g. \textit{nyiso\_nyc\_load.csv} is a dataset of load profile in New York City from 2017 to present.
-\footnote{Some quick start for the data itself is also accessible in folder \textit{startup} and \textit{supplementary}.}
+
 
 \subsection{Field Description}
-As mentioned, \textit{data\_release} folder contains all the cleaned and processed data. The file name follows the convention of \textbf{MARKET\_AREA\_CATEGORY.csv}. 
+As mentioned, \verb!data_release! folder contains all the cleaned and processed data. The file name follows the convention of \verb!MARKET\_AREA\_CATEGORY.csv!. 
 All the files are organized in a wide csv table. Here are some tips to further demonstrate the data.
 \subsubsection{Electricity Market Data}
 \begin{itemize}
@@ -502,7 +461,7 @@ Data quality control mainly includes two aspects: outlier detection and missing 
 \begin{table}[htbp]
 	\scriptsize
 	\centering
-	\caption{Data Quality Report(Snapshot by Jun.6).}
+	\caption{Data Quality Report(Snapshot by Jun.6, 2021).}
 	\label{tab:dataqualityreport}
 	\begin{tabular}{llllp{0.3\textwidth}}
 	\toprule
@@ -532,6 +491,723 @@ Data quality control mainly includes two aspects: outlier detection and missing 
 
 
 
+
+%--------------------------------
+\newpage
+\section{Baseline Estimation} \label{sec:baseline}
+
+Baseline refers to the basis of comparison with or without certain factor. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
+
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. Unlike \verb!cal_baseline!, here multiple methods can be appointed for comparison. See Sec.\ref{func:cal_baseline} and Sec.\ref{func:plot_baseline} for more detail.
+
+
+
+\subsection{Date and Week Alignment}
+
+Date alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same date and month in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_dates!. See Sec.\ref{func:cal_baseline_by_dates} for more detail.
+
+Week index alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same week and day of week in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_week_index!. See Sec.\ref{func:cal_baseline_by_week_index} for more detail.
+
+
+
+\subsection{Ensemble Backcast Estimation}
+The \textbf{Ensemble Backcast Model} is used to estimate the electricity consumption profile in the absence of COVID-19 pandemic, so that the comparison between the model and actual metered electricity consumption can be used to quantify the impact of COVID-19.
+
+A backcast model is expressed as a function that maps potential factors that may affect electricity consumption level, including weather variables (such as temperature, humidity and wind speed), date of year, and economic prosperity (yearly GDP growth rate) to the estimated electricity consumption. Given a group of backcast models, ensemble forecasting is widely recognized as the best approach to provide rich interval information. A group of backcast models for the daily average electricity consumption can be described by
+
+\begin{equation*}
+  \hat L_{md}=\frac{1}{N}\sum\limits_{i=1}^N \hat f_i(C_{md}, T_{mdq}, H_{mdq}, S_{mdq}, E),\forall m,d
+\end{equation*}
+
+where 
+\begin{itemize}
+  \item $C_{md}$ is the calendar information including month, day, weekday, and holiday flag.
+  \item $\hat L_{md}$ is the estimated daily average electricity consumption for month $m$ and day $d$.
+  \item $\hat f_i$ is the $i$-th backcast model.
+  \item $T_{mdq},H_{mdq},S_{mdq}$ are temperature, humidity and wind speed within the selected quantiles $q$.
+  \item $E$ is the estimated GDP growth rate.
+\end{itemize}
+We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing.
+
+In \covemda{}, this calculation process is performed by function \verb!cal_baseline_by_backcast!. See Sec.\ref{func:cal_baseline_by_backcast} for more detail.
+
+
+
+\subsection{Abnormal Price Index}\label{subsec:abnormal_price_index}
+
+Locational marginal prices play a crucial role in electricity markets and contribute to balancing generation and demand efficiently. Since these prices are relatively stochastic in nature, it is unsatisfactory to analyze them in the same way as electricity demand\footnote{the uncertainty intervals will be very wide}. Thus, the abnormal price index is developed to provide a more reliable tool for price analysis, which is defined as follows,
+\begin{equation*}
+  I(\lambda_{ymdt})=|2\hat F_m(\lambda_{ymdt})-1|, \forall y,m,d,t,
+\end{equation*}
+where $\lambda_{ymdt}$ is the day-ahead locational marginal price of year $y$, month $m$, day $d$, and hour $t$. $I(\cdot)$ is the proposed index, which lies between zero and one. This index quantifies the abnormality of a typical price, and a larger index value represents a more unusual observation. $\hat F_m(\cdot)$ is the cumulative distribution function for the prices in month $m$.\footnote{Which are more stable for analyzing these price changes. See the reason in \cite{quantitaveassess}}.
+
+The statistical meaning of the above index is explained by the probability density function shown in Figure~\ref{fig:abnormal_price_index}. For a given price, the index donates a possibility that measures how close this price is to the mean value. For example, if a price observation is located within the 25\% and 75\% quantiles, we obtain an index value below 0.5, which is considered normal.
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/abnormal_price_index.png}
+  \caption{Statistical illustration of the proposed abnormal price index. The basic idea is to show how near a price observation is to the mean value. This index can eliminate some stochastic factors when assessing price changes. The index value lies in [0,1], and a larger value means a higher possibility of abnormality.}
+  \label{fig:abnormal_price_index}
+\end{figure}
+
+In \covemda{}, the abnormal price index is calculated by function \verb!cal_abnormal_price_index!. More detail is available in Sec.\ref{func:cal_abnormal_price_index}.
+
+\subsection{Price Distribution Change Across Different Areas}\label{subsec:cal_distribution_diff}
+
+To conduct a cross-market comparison, a Wasserstein probability distance \cite{carrillo2004wasserstein}\cite{kantorovich2006translocation} metric to quantify the price change during the pandemic. The price change for year $y$ can be formulated as follows.
+\begin{equation*}
+    s_y=\text{WD}(\text{Vec}(\lambda_{ymdt})-\text{Vec}(\lambda_{hist})),\quad\forall y    
+\end{equation*}
+where $s_y$ donates the price change for year $y$ that is calculated by a Wasserstein distance function WD($\cdot$). Vec($\cdot$) is a vectorization function to place all the price data from March to mid-July in a one-dimensional array. $\lambda_{hist}$ represents all the historical price data accordingly.
+
+In \covemda{}, the price distribution distance is calculated by function \verb!cal_distribution_diff!. More detail is available in \ref{func:cal_distribution_diff}.
+
+\subsection{Excess Change Rate of Renewable}\label{subsec:excess_change_rate}
+
+One simple way to quantify the changes of renewable share during the COVID-19 pandemic is to make a linear assumption of its growth rate. Based on the assumption, the \textbf{excess change rate} is defined as the relative change rate between the observed renewable share and this estimation:
+
+\begin{equation*}
+    \eta=\left(\frac{r_{2020}}{2r_{2019}-r_{2018}}-1\right)\times100\%
+\end{equation*}
+where $\eta$ is the excess change rate, and $r_{2018}\sim r_{2020}$ are the market shares of renewable energy observed in 2018, 2019 and 2020.
+
+In \covemda{}, the excess change rate of renewable in various markets is provided by function \verb!cal_excess_change_rate!. This function reads the generation mix data from the data hub, and calculates the corresponding excess change rate according to the formula above. More detail is available in Sec.\ref{func:cal_excess_change_rate}.
+
+
+
+\subsection{Functions}
+
+\subsubsection{\texttt{cal\_baseline}}\label{func:cal_baseline}
+
+\begin{Code}
+function t_output=cal_baseline(market,varargin)
+\end{Code}
+
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, this function returns the load baseline (as a table or several tables if multiple quantiles are calculated) of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument \verb!Method! to alter calculation method (\verb!'date', 'week', 'backcast'!), or \verb!DateRangeCovid! to change the output date range.
+
+In practice, since this function calls the following low-level functions concerning baseline estimation, all the other arguments are passed on to them. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function like this:
+
+\begin{Code}
+>> cal_baseline('nyiso','TrainModel',1,'ModelNum',[10,3]);
+\end{Code}
+
+Although argument \verb!TrainModel! and \verb!ModelNum! belong to the low-level function \verb!cal_baseline_by_backcast!, it is recommended to specify them when calling high-level function \verb!cal_baseline!. See Table~\ref{tab:cal_baseline} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Baseline Options}
+    \label{tab:cal_baseline}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      Method & \begin{tabular}[t]{l}
+        character array \\
+        string    \\
+      \end{tabular} & Method for baseline estimation, specified as \verb!'date'!, \verb!'week'! or \verb!'backcast'!.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'backcast'!. \\
+      \end{tabular}                         \\
+      \midrule
+      DateRangeCovid & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for baseline estimation.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2020-02-01','2020-06-30'}!. \\
+        Example & \verb!{'2020-04-01','2020-04-30'}!  \\
+                & \verb!'2020-04-01'!  \\
+      \end{tabular} \\
+      \midrule
+      Others & & See Sec.\ref{func:cal_baseline_by_dates}, Sec.\ref{func:cal_baseline_by_week_index} and Sec.\ref{func:cal_baseline_by_backcast}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{plot\_baseline}}\label{func:plot_baseline}
+
+\begin{Code}
+function gr_handles=plot_baseline(market,varargin)
+\end{Code}
+
+\covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, plots them in one graph, and returns the handles of graphic objects. The user can appoint the methods to be plotted by specifying the value of name-value pair argument \verb!Method!. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. If so, \verb!cal_baseline! is called for each estimation method.
+
+The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin!, \verb!ResampleMethod! as well, just like the visualization functions in Sec.\ref{sec:visual}. See Table~\ref{tab:plot_baseline} for a full list of arguments.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Plot Baseline Options}
+    \label{tab:plot_baseline}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      Method & \begin{tabular}[t]{l}
+        cell array of character vectors \\
+        string array \\
+      \end{tabular} & Methods for baseline estimation, specified as \verb!'date'!, \verb!'week'! and(or) \verb!'backcast'!.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!["backcast", "date", "week"]!. \\
+        Example & \verb!'backcast'! \\
+      \end{tabular}                         \\
+      \midrule
+      ResampleBin & \begin{tabular}[t]{l}
+        string            \\
+        character vectors \\
+      \end{tabular} & Binning scheme for resampling. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'none'!. \\
+      \end{tabular}                         \\
+      \midrule
+      ResampleMethod & \begin{tabular}[t]{l}
+        string            \\
+        character vectors \\
+      \end{tabular} & Computation method for resampling. \\
+      & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'mean'!. \\
+      \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{func:cal_baseline}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_dates}}\label{func:cal_baseline_by_dates}
+
+\begin{Code}
+function t_output=cal_baseline_by_dates(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!date!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same date and month in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_dates!. It returns a table containing the dates and load baseline data.
+
+The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_week\_index}}\label{func:cal_baseline_by_week_index}
+
+\begin{Code}
+function t_output=cal_baseline_by_week_index(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!week!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same week and day of week in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_week_index!. It returns a table containing the dates and load baseline data.
+
+The only additional argument here is \verb!City! as well, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{cal\_baseline\_by\_backcast}}\label{func:cal_baseline_by_backcast}
+
+\begin{Code}
+function t_YPreds=cal_baseline_by_backcast(market,dr_Covid,varargin)
+\end{Code}
+
+If \verb!Method! is specified as \verb!backcast!, function \verb!cal_baseline! calculates the load baseline by either training new models or using existing models. This calculation process is performed by function \verb!cal_baseline_by_backcast!. If only one single quantile is appointed, this function returns a table containing the dates and load baseline data like the others. However, if multiple quantiles are appointed, this function returns a table whose first column is the quantiles, and each element in the second column is a table containing dates and baseline for corresponding quantile. All parameter names are listed in Table~\ref{tab:cal_baseline_by_backcast}.
+
+In general, this function consists of 3 or 6 steps (depends on whether to train models or not). If the user chooses to train a new model, the function
+
+\begin{enumerate}
+    \item imports training data and splits training and testing set (\verb!backcast_import_data!);
+    \item trains two-layer deep neural network models using training set with validation (\verb!backcast_scan_training!);
+    \item tests all the models and selects the best ones using testing set (\verb!backcast_test_model!);
+    \item saves trained models and summary (\verb!basic_backcast_save_file!);
+    \item imports data for baseline estimation (\verb!backcast_import_data!);
+    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
+\end{enumerate}
+
+If the user chooses not to train models but to use pre-trained models, the function
+
+\begin{enumerate}
+    \item imports existing models (\verb!basic_backcast_import_models!);
+    \item imports data for baseline estimation (\verb!backcast_import_data!);
+    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
+\end{enumerate}
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Baseline By Backcast Options}
+    \label{tab:cal_baseline_by_backcast}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \midrule
+      TrainModel & integer value & Train (1) or not train (0) models.   \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0. \\
+      \end{tabular}                         \\
+      \midrule
+      ImportNum & integer value or \verb!'latest'! & The id of the existing model to be imported. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'latest'!. \\
+      \end{tabular}                         \\
+      \midrule
+      DateRangeTrain & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for model training. Only effective when TrainModel=1.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2018-02-01','2020-01-31'}!. \\
+        Example & \verb!{'2018-01-01','2019-12-31'}!  \\
+                & \verb!["2018-01-01","2019-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      ModelNum & two-element numeric vector & The number of models to be tested and selected. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![800, 200]!. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveModel & integer value & Indicator to save trained models in \matlab{} .asv files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveModelONNX & integer value & Indicator to save trained models in .onnx files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0. \\
+      \end{tabular}                         \\
+      \midrule
+      SaveSummary & integer value & Indicator to save summary of trained models. Save(1) or not save(0). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      Others & & See Sec.\ref{func:backcast_import_data}, Sec.\ref{func:backcast_scan_training}, Sec.\ref{func:backcast_test_model} and Sec.\ref{func:backcast_scan_prediction}. \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{backcast\_import\_data}}\label{func:backcast_import_data}
+
+\begin{Code}
+function [t_XTrainandtest,t_YTrainandtest,t_XTrainandvalid,t_YTrainandvalid,
+t_XTest,t_YTest]=backcast_import_data(market,dr_Trainandtest,varargin)
+\end{Code}
+
+Function \verb!backcast_import_data! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of importing data for training, validation and testing of the ensemble backcast model. \verb!t_XTrainandtest! and \verb!t_YTrainandtest! are the training (including validation) and testing set, and the others are training-validation set and testing set separated from each other, i.e., the union of the last four equals the first two.
+
+The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
+
+
+
+\subsubsection{\texttt{backcast\_scan\_training}}\label{func:backcast_scan_training}
+
+\begin{Code}
+function t_net=backcast_scan_training(t_XTrainandvalid,t_YTrainandvalid,
+model_num,varargin)
+\end{Code}
+
+Function \verb!backcast_scan_training! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of training the deep neural networks. This function trains \verb!model_num! deep neural networks with two hidden layers and random number of hidden units, determined by argument \verb!numHiddenUnits! and \verb!RandVariation!. The return value of this function is a table of all the trained models, along with their parameters, validation accuracy and corresponding scalers. All parameter names are listed in Table~\ref{tab:backcast_scan_training}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Backcast Scan Training Options}
+    \label{tab:backcast_scan_training}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      numHiddenUnits & two-element numeric vector & The number of hidden units in the two full connection layers. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![32, 64]!. \\
+      \end{tabular}                         \\
+      \midrule
+      TrainVerbose & integer value & Indicator to display training progress information. No display(0), brief display(1) or detailed display(2). Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \midrule
+      RandVariation & double value in (0,1) & Relative range (1-RandVariation, 1+RandVariation) of random variation of model parameters numHiddenUnits for scan training. Only effective when TrainModel=0.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 0.2. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{backcast\_test\_model}}\label{func:backcast_test_model}
+
+\begin{Code}
+function [t_net_all,t_net_sel]=backcast_test_model(t_net_all,t_XTest,
+t_YTest,model_sel,varargin);
+\end{Code}
+
+Function \verb!backcast_test_model! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of selecting the best deep neural networks. This function selects the best \verb!model_sel! models using the testing set. \verb!t_net_sel! is a table of the selected models, and \verb!t_net_all! is still the table of all models, with the information (testing accuracy, sign of selection) of the test.
+
+The only additional argument here is \verb!TrainVerbose!, which is the same as the one in Sec.\ref{func:backcast_scan_training}.
+
+
+
+\subsubsection{\texttt{backcast\_scan\_prediction}}\label{func:backcast_scan_prediction}
+
+\begin{Code}
+function t_YPreds=backcast_scan_prediction(t_net,t_XPred,varargin)
+\end{Code}
+
+Function \verb!backcast_scan_prediction! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of calculating baseline using the ensemble backcast model. It returns a table containing the dates and load baseline data. All parameter names are listed in Table~\ref{func:backcast_scan_prediction}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Backcast Scan Prediction Options}
+    \label{tab:backcast_scan_prediction}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      Quantile & numeric vector in (0,1) & Quantiles to be calculated in scan prediction. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb![0.1, 0.25, 0.5, 0.75, 0.9]!. \\
+        Example & 0.5   \\
+      \end{tabular}                         \\
+      \midrule
+      PredictVerbose & integer value & Indicator to display prediction progress information. No display(0) or brief display(1).  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & 1. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{cal\_abnormal\_price\_index}}\label{func:cal_abnormal_price_index}
+
+\begin{Code}
+function output=cal_abnormal_price_index(market,varargin)
+\end{Code}
+
+Function \verb!cal_abnormal_price_index! calculates the proposed abnormal index in Sec.\ref{subsec:abnormal_price_index}. The output is a table containing abnormal price index and corresponding date. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Abnormal Price Index and Cal Distribution Diff Options}
+    \label{tab:cal_abnormal_price_index}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      DateRange & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for index calculation. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2020-03-01','2020-07-15'}!. \\
+        Example & \verb!{'2020-01-01','2020-12-31'}!  \\
+                & \verb!["2020-01-01","2020-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsubsection{\texttt{cal\_distribution\_diff}}\label{func:cal_distribution_diff}
+
+\begin{Code}
+function output=cal_distribution_diff(market,varargin)
+\end{Code}
+
+Function \verb!cal_distribution_diff! provides an indicator for the difference of price distribution with data from the previous year as baseline. It adopts Wasserstein distance as the measurement method. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
+
+
+
+\subsubsection{\texttt{cal\_excess\_change\_rate}}\label{func:cal_excess_change_rate}
+
+\begin{Code}
+function output=cal_excess_change_rate(market,varargin)
+\end{Code}
+
+Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in Sec.\ref{subsec:excess_change_rate}. The return value is the proposed excess change rate of renewable of the specified market. All parameter names are listed in Table~\ref{tab:cal_excess_change_rate}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{Cal Excess Change Rate Options}
+    \label{tab:cal_excess_change_rate}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+      DateRange & \begin{tabular}[t]{l}
+        datetime array \\
+        string array    \\
+        cell array of character vectors \\
+      \end{tabular} & Range of time for index calculation. \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
+        Example & \verb!{'2017-01-01','2020-12-31'}!  \\
+                & \verb!["2017-01-01","2020-12-31"]!  \\
+      \end{tabular} \\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
+
+\subsection{Examples}
+
+In this section, we introduce the usage of the functions above with several examples. It is recommended to use feature-oriented high-level functions (see \ref{subsec:func_list}), and the following explanations and instructions are designed for them.
+
+All high-level functions mentioned above (\verb!cal_baseline!, \verb!plot_baseline!, \verb!cal_abnormal_price_index!, \verb!cal_distribution_diff! and \verb!cal_excess_change_rate!) have similar input forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
+
+\begin{center}
+  \verb!'caiso' | 'ercot' | 'isone' | 'miso' | 'nyiso' | 'pjm' | 'spp'!
+\end{center}
+
+As long as the market name is given, a basic version of the desired result can be simply obtained, which is illustrated in Sec.\ref{subsec:eg_baseline}. All the other input arguments should be in the form of \textbf{name-value pairs} for the function to correctly recognize.
+
+\begin{Code}
+cal_baseline(market,'argument_name1',argument_value1,'argument_name2',
+argument_value2,...);
+\end{Code}
+
+For example, if the user needs to train a new ensemble backcast model with less networks for baseline estimation:
+
+\begin{Code}
+>> t_retrain=cal_baseline('caiso','TrainModel',1,'ModelNum',[10,8]);
+Training, 10 models in total.
+--Training Model #1, number of hidden units: 34  60.
+--Model #1 trained, MAPE: 2.69%
+--Training Model #2, number of hidden units: 29  52.
+--Model #2 trained, MAPE: 3.04%
+...
+--Training Model #9, number of hidden units: 33  54.
+--Model #9 trained, MAPE: 3.27%
+--Training Model #10, number of hidden units: 35  59.
+--Model #10 trained, MAPE: 2.86%
+Testing, 10 models in total.
+--Running Model #1.
+--Running Model #2.
+...
+--Running Model #9.
+--Running Model #10.
+Predicting, 8 models in total.
+--Running Model #9.
+--Running Model #7.
+--Running Model #5.
+--Running Model #4.
+--Running Model #3.
+--Running Model #2.
+--Running Model #1.
+--Running Model #10.
+
+t_retrain =
+
+  5x2 table
+
+    quantile        result    
+    ________    ______________
+
+       0.1      {151x25 table}
+      0.25      {151x25 table}
+       0.5      {151x25 table}
+      0.75      {151x25 table}
+       0.9      {151x25 table}
+\end{Code}
+
+As illustrated in Sec.\ref{func:cal_baseline_by_backcast}, this function returns a table whose first column is the quantiles \verb![0.1,0.25,0.5,0.75,0.9]!, and each element in the second column is a table containing dates and baseline for corresponding quantile. Summary of the newly trained model can be found at:
+\begin{center}
+    \verb!<CoVEMDA_root_directory>\data_temp\backcast\models\caiso_rto\Model_<timestamp>\Summary.csv!
+\end{center}
+
+For function \verb!plot_baseline!, its legal parameters include both \verb!cal_baseline! options and modifications of the plot. Like the functions in Sec.\ref{sec:visual}, the user can change property values of the chart after calling this function. For example, if the user needs to visualize different baselines: (command output omitted)
+
+\begin{Code}
+>> handles=plot_baseline('nyiso','DateRangeCovid','2020-04-01');
+>> handles{6}.Color='#d95319';
+\end{Code}
+
+Add the observed demand data to the graph and adjust x-axis labels:
+
+\begin{Code}
+>> plot_demand('nyiso','DateRange','2020-04-01','DisplayName',
+   'observed','Color','#edb120');
+>> ax=gca;
+>> ax.XTickLabel=strcat(string([0:2:22,23]),":00");
+\end{Code}
+
+The result is displayed in Figure~\ref{fig:baseline_eg1}. For the baseline estimated by ensemble backcast model, the intervals are represented with areas of different brightness, indicating the distribution, which is the same as \verb!plot_quantile! in Sec.\ref{func:plot_area}.
+
+\begin{figure}
+  \centering
+  \noindent\includegraphics[width=0.8\textwidth]{figures/baseline_example1.jpg}
+  \caption{Example: Baseline and Observed Demand of NYISO} \label{fig:baseline_eg1}
+\end{figure}
+
+
+
+%---------------------------------
+\newpage
+\section{Regression Analysis} \label{sec:regression}
+
+\subsection{Regression Methodology}
+ 
+To interpret the changes in electricity consumption during pandemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account.In this section, we hereby introduce two regression methods to study the relationships between influential factors and electricity consumption.
+
+Moreover, \covemda \quad supports regression based on any factors, including external data inputs. Users may define how the factors are regressed, including by linear, interaction, quadratic or pure-quadratic methods.
+
+\subsubsection{OLS}
+
+Ordinary least squares(OLS) models are implemented in \covemda. It includes linear and non-linear models and offers multiple choices for model fitting. Besides, \covemda \quad also support correlation analysis for variables either from COVID-EMDA+ or from external sources.
+
+\begin{equation}
+  min f(x)=\sum^{m}_{i=1}L_i^2(x)=\sum^{m}_{i=1}[y_i-f(x_i,\omega_i)]^2,
+\end{equation}
+Ordinary least squares aim for the minimum value of the formula above, in which $L_i(x)$ is the residual function. If $L_i(x)$ is a linear function about $x$, the optimization problem is called 'linear least squares problem', while nonlinear ones are addressed as 'nonlinear least squares problems'. 
+
+\subsubsection{VAR}
+
+
+Restricted Vector Autoregression (Restricted VAR) models are implemented in \covemda as well. Restricted VAR models are powerful tools for multivariate time series analysis with complex correlations.
+
+Vector autoregression (VAR)\cite{var} is a stochastic process model that can be used to capture the linear correlation between multiple time-series. We model the dynamics of reduction in electricity consumption using a Restricted VAR model of order p as follows:
+
+\begin{equation}
+  X_t=C+A_1X_{t-1}+\dots+A_pX_{t-p}+E_t,
+\end{equation}
+where
+\begin{equation}
+  A_i=
+  \begin{bmatrix}
+  a_{1,1}^i & a_{1,2}^i & \cdots & a_{1,n}^i\\
+  a_{2,1}^i & a_{2,2}^i & \cdots & a_{2,n}^i\\
+  \vdots & \vdots & \ddots & \vdots \\
+  a_{n,1}^i & a_{n,2}^i & \cdots & a_{n,n}^i\\
+  \end{bmatrix}
+  ,X_t=
+  \begin{bmatrix}
+    x_t^1\\x_t^2\\\vdots\\x_t^n
+  \end{bmatrix},
+  C=
+  \begin{bmatrix}
+    c^1\\c^2\\\vdots\\c^n
+  \end{bmatrix},
+  E_t=
+  \begin{bmatrix}
+    e_t^1\\e_t^2\\\vdots\\e_t^n
+  \end{bmatrix},
+\end{equation}
+in which $A_i$ is the regression matrix, $x_t^1$ represents the target output variable at time $t$, namely the reduction in electricity consumption we wish to model, $x_t^2,\cdots,x_t^n$ represent the selected $n-1$ parameter variables including confirmed case numbers, stay-at-home population, median home dwell time rate, population of on-site workers, mobility in the retail sector and etc., $C$ and $E_t$ are respectively column vectors of intercept and random errors, and the time notation $t-p$ represents the $p$-th lag of the variables.
+
+\subsection{Factor Analysis}
+The full procedure of building the restricted VAR model mainly contains four steps as follows, including pre-estimation preparation, restricted VAR model estimation, restricted VAR model verification, and post-estimation analysis.
+\subsubsection{Pre-estimation Preparation}
+\begin{itemize}
+  \item Data Preprocessing: Several datasets are collected to calculate the inputs of restricted VAR model, including electricity market data, weather data, number of COVID-19 cases, and mobile device location data. We take logarithms of several variables, including electricity consumption reduction, new daily confirmed cases, stay-at-home population, population of full-time on-site workers, population of part-time on-site workers, and mobility in the retail sector, while only keeping the original value of the median home dwell time rate.
+  \item Augmented Dickey-Fuller (ADF) Test: Test whether a time-series variable is non-stationary and possesses a unit root.
+  \item Cointegration Test: Test the long-term correlation between multiple non-stationary time-series.
+  \item Granger Causality Wald Test: Estimate the causality relationship among two variables represented as time-series.
+\end{itemize}
+\subsubsection{Restricted VAR Model Estimation}
+\begin{itemize}
+  \item  Ordinary Least Square (OLS): We impose constraints on the OLS to eliminate any undesirable causal relationships between variables.
+\end{itemize}
+\subsubsection{Restricted VAR Model Verification}
+\begin{itemize}
+  \item ADF Test: Verify if the residual time-series are non-stationary and possess a unit root.
+  \item Ljung-Box Test: Verify the endogeneity of the residual data that may render the regression result untrustworthy.
+  \item Durbin-Watson Test: Detect the presence of autocorrelation at log 1 in the residuals of the Restricted VAR model.
+  \item Robustness Test: Test the robustness of the Restricted VAR model against parameter perturbations.
+\end{itemize}
+\subsubsection{Post-estimation Analysis}
+\begin{itemize}
+  \item Impulse Response Analysis: Describe the evolution of the Restricted VAR model’s variable in response to a shock in one or more variables.
+  \item Forecast Error Variance Decomposition: Aid in the interpretation of the Restricted VAR model by determining the proportion of each variable’s forecast variance that is contributed by shocks to the other variables.
+\end{itemize}
+
+
+
+
+\subsection{Functions}
+
+\subsubsection{\texttt{OLS}}\label{func:OLS}
+
+\begin{Code}
+function output=OLS(table,varnum,varagin)
+\end{Code}
+
+Function \verb!OLS! gives a solution to the regression model in Sec.\ref{subsec:OLS}. The output is a printed table containing regression vector and correlation analysis. All parameter names are listed in Table~\ref{tab:OLS}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{OLS Parameters and Options}
+    \label{tab:OLS}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+     table & input & Vectors of variables for regression\\
+           \midrule
+     varname & input & Vectors of variables for regression\\
+      \midrule
+      City & \begin{tabular}[t]{l}
+        string    \\
+        character array \\
+      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
+       & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'rto'!. \\
+      \end{tabular}                         \\
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+
 %--------------------------------------------
 \newpage
 \section{Visualization} \label{sec:visual}
@@ -540,7 +1216,7 @@ Data quality control mainly includes two aspects: outlier detection and missing 
 
 After the COVID-19 outbreak, the total generation as well as generation share of each market in U.S. varied. In order to analyse this change, we may observe the generation data in scale of time or of generation fuels. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
 
-In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Function \verb!plot_generation_mix! plots the generation mix data in the form of filled areas, and function \verb!plot_renewable_share! plots the renewable share data in the form of a line chart. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub. See Sec.\ref{plot_generation_mix} and Sec.\ref{plot_renewable_share} for more detail.
+In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Function \verb!plot_generation_mix! plots the generation mix data in the form of filled areas, and function \verb!plot_renewable_share! plots the renewable share data in the form of a line chart. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub. See Sec.\ref{func:plot_generation_mix} and Sec.\ref{func:plot_renewable_share} for more detail.
 
 \begin{Code}
 >> plot_generation_mix('spp');
@@ -560,7 +1236,7 @@ One possible output of function \verb!plot_generation_mix! with default settings
 
 Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the pandemic, electricity demand patterns and power system operation.
 
-In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_curve!. Function \verb!plot_demand! plots the load data in the form of a line chart, and function \verb!plot_daily_demand_curve! plots the demand distribution curve in the form of multiple areas. Both of them obtain relevant data from file \verb!<market_name>_<city_name>_load.csv! in the data hub. See Sec.\ref{plot_demand} and Sec.\ref{plot_daily_demand_curve} for more detail.
+In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_curve!. Function \verb!plot_demand! plots the load data in the form of a line chart, and function \verb!plot_daily_demand_curve! plots the demand distribution curve in the form of multiple areas. Both of them obtain relevant data from file \verb!<market_name>_<city_name>_load.csv! in the data hub. See Sec.\ref{func:plot_demand} and Sec.\ref{func:plot_daily_demand_curve} for more detail.
 
 \begin{Code}
 >> plot_daily_demand_curve('nyiso');
@@ -641,7 +1317,7 @@ character vectors\\
 Default & \verb!'month'!.\\
 \end{tabular}\\
 \midrule
-Others & & See Sec.\ref{plot_area}.\\
+Others & & See Sec.\ref{func:plot_area}.\\
 \bottomrule
 \end{tabular}
 \end{threeparttable}
@@ -704,7 +1380,7 @@ Default & \verb!'none'!.\\
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-Others & & See Sec.\ref{plot_line_chart}.\\
+Others & & See Sec.\ref{func:plot_line_chart}.\\
 \bottomrule
 \end{tabular}
 \end{threeparttable}
@@ -770,7 +1446,7 @@ By default, this function plots the daily demand curve of the specified market f
         Default & \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{plot_quantile}.\\
+      Others & & See Sec.\ref{func:plot_quantile}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -829,7 +1505,7 @@ By default, this function plots the price distribution of the specified market f
         Default & \verb!'rto'!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{plot_histogram}.\\
+      Others & & See Sec.\ref{func:plot_histogram}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -900,7 +1576,7 @@ By default, this function plots the mobility data of the retail sector in the sp
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{plot_line_chart}.\\
+      Others & & See Sec.\ref{func:plot_line_chart}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -1113,9 +1789,11 @@ Function \verb!plot_histogram! is the subfunction of \verb!plot_price_distributi
 
 \subsection{Examples}
 
+In this section, we introduce the usage of the functions above with several examples. It is recommended to use feature-oriented high-level functions (see \ref{subsec:func_list}), and the following explanations and instructions are designed for them.
+
 \subsubsection{Basic Usage} \label{subsubsec:vis_basic}
 
-All functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
+All high-level functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
 
 \begin{center}
   \verb!'caiso' | 'ercot' | 'isone' | 'miso' | 'nyiso' | 'pjm' | 'spp'!
@@ -1257,585 +1935,17 @@ Such modifications are obtained by changing property values of certain objects u
 
 
 
-%--------------------------------
-\newpage
-\section{Baseline Estimation} \label{sec:baseline}
-
-Baseline refers to the basis of comparison with or without certain factor. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
-
-\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. Unlike \verb!cal_baseline!, here multiple methods can be appointed for comparison. See Sec.\ref{cal_baseline} and Sec.\ref{plot_baseline} for more detail.
-
-
-
-\subsection{Date and Week Alignment}
-
-Date alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same date and month in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_dates!. See Sec.\ref{cal_baseline_by_dates} for more detail.
-
-Week index alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same week and day of week in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_week_index!. See Sec.\ref{cal_baseline_by_week_index} for more detail.
-
-
-
-\subsection{Ensemble Backcast Estimation}
-The \textbf{Ensemble Backcast Model} is used to estimate the electricity consumption profile in the absence of COVID-19 pandemic, so that the comparison between the model and actual metered electricity consumption can be used to quantify the impact of COVID-19.
-
-A backcast model is expressed as a function that maps potential factors that may affect electricity consumption level, including weather variables (such as temperature, humidity and wind speed), date of year, and economic prosperity (yearly GDP growth rate) to the estimated electricity consumption. Given a group of backcast models, ensemble forecasting is widely recognized as the best approach to provide rich interval information. A group of backcast models for the daily average electricity consumption can be described by
-
-\begin{equation*}
-  \hat L_{md}=\frac{1}{N}\sum\limits_{i=1}^N \hat f_i(C_{md}, T_{mdq}, H_{mdq}, S_{mdq}, E),\forall m,d
-\end{equation*}
-
-where 
-\begin{itemize}
-  \item $C_{md}$ is the calendar information including month, day, weekday, and holiday flag.
-  \item $\hat L_{md}$ is the estimated daily average electricity consumption for month $m$ and day $d$.
-  \item $\hat f_i$ is the $i$-th backcast model.
-  \item $T_{mdq},H_{mdq},S_{mdq}$ are temperature, humidity and wind speed within the selected quantiles $q$.
-  \item $E$ is the estimated GDP growth rate.
-\end{itemize}
-We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing.
-
-In \covemda{}, this calculation process is performed by function \verb!cal_baseline_by_backcast!. See Sec.\ref{cal_baseline_by_backcast} for more detail.
-
-
-
-\subsection{Abnormal Price Index}\label{subsec:abnormal_price_index}
-
-Locational marginal prices play a crucial role in electricity markets and contribute to balancing generation and demand efficiently. Since these prices are relatively stochastic in nature, it is unsatisfactory to analyze them in the same way as electricity demand\footnote{the uncertainty intervals will be very wide}. Thus, the abnormal price index is developed to provide a more reliable tool for price analysis, which is defined as follows,
-\begin{equation*}
-  I(\lambda_{ymdt})=|2\hat F_m(\lambda_{ymdt})-1|, \forall y,m,d,t,
-\end{equation*}
-where $\lambda_{ymdt}$ is the day-ahead locational marginal price of year $y$, month $m$, day $d$, and hour $t$. $I(\cdot)$ is the proposed index, which lies between zero and one. This index quantifies the abnormality of a typical price, and a larger index value represents a more unusual observation. $\hat F_m(\cdot)$ is the cumulative distribution function for the prices in month $m$.\footnote{Which are more stable for analyzing these price changes. See the reason in \cite{quantitaveassess}}.
-
-The statistical meaning of the above index is explained by the probability density function shown in Figure~\ref{fig:abnormal_price_index}. For a given price, the index donates a possibility that measures how close this price is to the mean value. For example, if a price observation is located within the 25\% and 75\% quantiles, we obtain an index value below 0.5, which is considered normal.
-\begin{figure}
-  \centering
-  \includegraphics[width=.8\textwidth]{figures/abnormal_price_index.png}
-  \caption{Statistical illustration of the proposed abnormal price index. The basic idea is to show how near a price observation is to the mean value. This index can eliminate some stochastic factors when assessing price changes. The index value lies in [0,1], and a larger value means a higher possibility of abnormality.}
-  \label{fig:abnormal_price_index}
-\end{figure}
-
-In \covemda{}, the abnormal price index is calculated by function \verb!cal_abnormal_price_index!. More detail is available in Sec.\ref{cal_abnormal_price_index}.
-
-
-
-\subsection{Excess Change Rate of Renewable}\label{subsec:excess_change_rate}
-
-One simple way to quantify the changes of renewable share during the COVID-19 pandemic is to make a linear assumption of its growth rate. Based on the assumption, the \textbf{excess change rate} is defined as the relative change rate between the observed renewable share and this estimation:
-
-\begin{equation*}
-    \eta=\left(\frac{r_{2020}}{2r_{2019}-r_{2018}}-1\right)\times100\%
-\end{equation*}
-
-where $\eta$ is the excess change rate, and $r_{2018}\sim r_{2020}$ are the market shares of renewable energy observed in 2018, 2019 and 2020.
-
-In \covemda{}, the excess change rate of renewable in various markets is provided by function \verb!cal_excess_change_rate!. This function reads the generation mix data from the data hub, and calculates the corresponding excess change rate according to the formula above. More detail is available in Sec.\ref{cal_excess_change_rate}.
-
-
-
-\subsection{Functions}
-
-\subsubsection{\texttt{cal\_baseline}}\label{func:cal_baseline}
-
-\begin{Code}
-function t_output=cal_baseline(market,varargin)
-\end{Code}
-
-\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. By default, this function returns the load baseline (as a table or several tables if multiple quantiles are calculated) of specified ISO or city (if \verb!City! is specified) by backcast estimation from 2020-02-01 to 2020-06-30. The user needs to specify the value of name-value pair argument \verb!Method! to alter calculation method (\verb!'date', 'week', 'backcast'!), or \verb!DateRangeCovid! to change the output date range.
-
-In practice, since this function calls the following low-level functions concerning baseline estimation, all the other arguments are passed on to them. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function like this:
-
-\begin{Code}
->> cal_baseline('nyiso','TrainModel',1,'ModelNum',[10,3]);
-\end{Code}
-
-Although argument \verb!TrainModel! and \verb!ModelNum! belong to the low-level function \verb!cal_baseline_by_backcast!, it is recommended to specify them when calling high-level function \verb!cal_baseline!. See Table~\ref{tab:cal_baseline} for a full list of arguments.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Cal Baseline Options}
-    \label{tab:cal_baseline}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      Method & \begin{tabular}[t]{l}
-        character array \\
-        string    \\
-      \end{tabular} & Method for baseline estimation, specified as \verb!'date'!, \verb!'week'! or \verb!'backcast'!.   \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'backcast'!. \\
-      \end{tabular}                         \\
-      \midrule
-      DateRangeCovid & \begin{tabular}[t]{l}
-        datetime array \\
-        string array    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time for baseline estimation.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2020-02-01','2020-06-30'}!. \\
-        Example & \verb!{'2020-04-01','2020-04-30'}!  \\
-                & \verb!'2020-04-01'!  \\
-      \end{tabular} \\
-      \midrule
-      Others & & See Sec.\ref{cal_baseline_by_dates}, Sec.\ref{cal_baseline_by_week_index} and Sec.\ref{cal_baseline_by_backcast}. \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{plot\_baseline}}\label{func:plot_baseline}
-
-\begin{Code}
-function gr_handles=plot_baseline(market,varargin)
-\end{Code}
-
-\covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, plots them in one graph, and returns the handles of graphic objects. The user can appoint the methods to be plotted by specifying the value of name-value pair argument \verb!Method!. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. If so, \verb!cal_baseline! is called for each estimation method.
-
-The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin!, \verb!ResampleMethod! as well, just like the visualization functions in Sec.\ref{sec:visual}. See Table~\ref{tab:plot_baseline} for a full list of arguments.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Plot Baseline Options}
-    \label{tab:plot_baseline}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      Method & \begin{tabular}[t]{l}
-        cell array of character vectors \\
-        string array \\
-      \end{tabular} & Methods for baseline estimation, specified as \verb!'date'!, \verb!'week'! and(or) \verb!'backcast'!.   \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!["backcast", "date", "week"]!. \\
-        Example & \verb!'backcast'! \\
-      \end{tabular}                         \\
-      \midrule
-      ResampleBin & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & Binning scheme for resampling. \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'none'!. \\
-      \end{tabular}                         \\
-      \midrule
-      ResampleMethod & \begin{tabular}[t]{l}
-        string            \\
-        character vectors \\
-      \end{tabular} & Computation method for resampling. \\
-      & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'mean'!. \\
-      \end{tabular}                         \\
-      \midrule
-      Others & & See Sec.\ref{cal_baseline}. \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{cal\_baseline\_by\_dates}}\label{func:cal_baseline_by_dates}
-
-\begin{Code}
-function t_output=cal_baseline_by_dates(market,dr_Covid,varargin)
-\end{Code}
-
-If \verb!Method! is specified as \verb!date!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same date and month in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_dates!. It returns a table containing the dates and load baseline data.
-
-The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
-
-
-
-\subsubsection{\texttt{cal\_baseline\_by\_week\_index}}\label{func:cal_baseline_by_week_index}
-
-\begin{Code}
-function t_output=cal_baseline_by_week_index(market,dr_Covid,varargin)
-\end{Code}
-
-If \verb!Method! is specified as \verb!week!, function \verb!cal_baseline! calculates the load baseline by searching for the load data of the exact same week and day of week in the previous year, for every day in \verb!DateRangeCovid!. This calculation process is performed by function \verb!cal_baseline_by_week_index!. It returns a table containing the dates and load baseline data.
-
-The only additional argument here is \verb!City! as well, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
-
-
-
-\subsubsection{\texttt{cal\_baseline\_by\_backcast}}\label{func:cal_baseline_by_backcast}
-
-\begin{Code}
-function t_YPreds=cal_baseline_by_backcast(market,dr_Covid,varargin)
-\end{Code}
-
-If \verb!Method! is specified as \verb!backcast!, function \verb!cal_baseline! calculates the load baseline by either training new models or using existing models. This calculation process is performed by function \verb!cal_baseline_by_backcast!. If only one single quantile is appointed, this function returns a table containing the dates and load baseline data like the others. However, if multiple quantiles are appointed, this function returns a table whose first column is the quantiles, and each element in the second column is a table containing dates and baseline for corresponding quantile. All parameter names are listed in Table~\ref{tab:cal_baseline_by_backcast}.
-
-In general, this function consists of 3 or 6 steps (depends on whether to train models or not). If the user chooses to train a new model, the function
-
-\begin{enumerate}
-    \item imports training data and splits training and testing set (\verb!backcast_import_data!);
-    \item trains two-layer deep neural network models using training set with validation (\verb!backcast_scan_training!);
-    \item tests all the models and selects the best ones using testing set (\verb!backcast_test_model!);
-    \item saves trained models and summary (\verb!basic_backcast_save_file!);
-    \item imports data for baseline estimation (\verb!backcast_import_data!);
-    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
-\end{enumerate}
-
-If the user chooses not to train models but to use pre-trained models, the function
-
-\begin{enumerate}
-    \item imports existing models (\verb!basic_backcast_import_models!);
-    \item imports data for baseline estimation (\verb!backcast_import_data!);
-    \item calculates the load baseline with quantiles (\verb!backcast_scan_prediction!).
-\end{enumerate}
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Cal Baseline By Backcast Options}
-    \label{tab:cal_baseline_by_backcast}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      City & \begin{tabular}[t]{l}
-        string    \\
-        character array \\
-      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'rto'!. \\
-      \end{tabular}                         \\
-      \midrule
-      TrainModel & integer value & Train (1) or not train (0) models.   \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 0. \\
-      \end{tabular}                         \\
-      \midrule
-      ImportNum & integer value or \verb!'latest'! & The id of the existing model to be imported. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'latest'!. \\
-      \end{tabular}                         \\
-      \midrule
-      DateRangeTrain & \begin{tabular}[t]{l}
-        datetime array \\
-        string array    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time for model training. Only effective when TrainModel=1.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2018-02-01','2020-01-31'}!. \\
-        Example & \verb!{'2018-01-01','2019-12-31'}!  \\
-                & \verb!["2018-01-01","2019-12-31"]!  \\
-      \end{tabular} \\
-      \midrule
-      ModelNum & two-element numeric vector & The number of models to be tested and selected. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb![800, 200]!. \\
-      \end{tabular}                         \\
-      \midrule
-      SaveModel & integer value & Indicator to save trained models in \matlab{} .asv files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 1. \\
-      \end{tabular}                         \\
-      \midrule
-      SaveModelONNX & integer value & Indicator to save trained models in .onnx files. Save(1) or not save(0). Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 0. \\
-      \end{tabular}                         \\
-      \midrule
-      SaveSummary & integer value & Indicator to save summary of trained models. Save(1) or not save(0). Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 1. \\
-      \end{tabular}                         \\
-      \midrule
-      Others & & See Sec.\ref{backcast_import_data}, Sec.\ref{backcast_scan_training}, Sec.\ref{backcast_test_model} and Sec.\ref{backcast_scan_prediction}. \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{backcast\_import\_data}}\label{func:backcast_import_data}
-
-\begin{Code}
-function [t_XTrainandtest,t_YTrainandtest,t_XTrainandvalid,t_YTrainandvalid,
-t_XTest,t_YTest]=backcast_import_data(market,dr_Trainandtest,varargin)
-\end{Code}
-
-Function \verb!backcast_import_data! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of importing data for training, validation and testing of the ensemble backcast model. \verb!t_XTrainandtest! and \verb!t_YTrainandtest! are the training (including validation) and testing set, and the others are training-validation set and testing set separated from each other, i.e., the union of the last four equals the first two.
-
-The only additional argument here is \verb!City!, specified as one of the seven abbreviations: \verb!'la'!,  \verb!'houston'!, \verb!'boston'!, \verb!'nyc'!, \verb!'chicago'!, \verb!'phila'! and \verb!'kck'!, or \verb!'rto'! (default) if the user needs the result for the entire market.
-
-
-
-\subsubsection{\texttt{backcast\_scan\_training}}\label{func:backcast_scan_training}
-
-\begin{Code}
-function t_net=backcast_scan_training(t_XTrainandvalid,t_YTrainandvalid,
-model_num,varargin)
-\end{Code}
-
-Function \verb!backcast_scan_training! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of training the deep neural networks. This function trains \verb!model_num! deep neural networks with two hidden layers and random number of hidden units, determined by argument \verb!numHiddenUnits! and \verb!RandVariation!. The return value of this function is a table of all the trained models, along with their parameters, validation accuracy and corresponding scalers. All parameter names are listed in Table~\ref{tab:backcast_scan_training}.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Backcast Scan Training Options}
-    \label{tab:backcast_scan_training}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      numHiddenUnits & two-element numeric vector & The number of hidden units in the two full connection layers. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb![32, 64]!. \\
-      \end{tabular}                         \\
-      \midrule
-      TrainVerbose & integer value & Indicator to display training progress information. No display(0), brief display(1) or detailed display(2). Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 1. \\
-      \end{tabular}                         \\
-      \midrule
-      RandVariation & double value in (0,1) & Relative range (1-RandVariation, 1+RandVariation) of random variation of model parameters numHiddenUnits for scan training. Only effective when TrainModel=0.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 0.2. \\
-      \end{tabular}                         \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{backcast\_test\_model}}\label{func:backcast_test_model}
-
-\begin{Code}
-function [t_net_all,t_net_sel]=backcast_test_model(t_net_all,t_XTest,
-t_YTest,model_sel,varargin);
-\end{Code}
-
-Function \verb!backcast_test_model! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of selecting the best deep neural networks. This function selects the best \verb!model_sel! models using the testing set. \verb!t_net_sel! is a table of the selected models, and \verb!t_net_all! is still the table of all models, with the information (testing accuracy, sign of selection) of the test.
-
-The only additional argument here is \verb!TrainVerbose!, which is the same as the one in Sec.\ref{backcast_scan_training}.
-
-
-
-\subsubsection{\texttt{backcast\_scan\_prediction}}\label{func:backcast_scan_prediction}
-
-\begin{Code}
-function t_YPreds=backcast_scan_prediction(t_net,t_XPred,varargin)
-\end{Code}
-
-Function \verb!backcast_scan_prediction! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of calculating baseline using the ensemble backcast model. It returns a table containing the dates and load baseline data. All parameter names are listed in Table~\ref{backcast_scan_prediction}.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Backcast Scan Prediction Options}
-    \label{tab:backcast_scan_prediction}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      Quantile & numeric vector in (0,1) & Quantiles to be calculated in scan prediction. \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb![0.1, 0.25, 0.5, 0.75, 0.9]!. \\
-        Example & 0.5   \\
-      \end{tabular}                         \\
-      \midrule
-      PredictVerbose & integer value & Indicator to display prediction progress information. No display(0) or brief display(1).  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & 1. \\
-      \end{tabular}                         \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{cal\_abnormal\_price\_index}}\label{func:cal_abnormal_price_index}
-
-\begin{Code}
-function output=cal_abnormal_price_index(market,varargin)
-\end{Code}
-
-Function \verb!cal_abnormal_price_index! calculates the proposed abnormal index in Sec.\ref{subsec:abnormal_price_index}. The output is a table containing abnormal price index and corresponding date. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Cal Abnormal Price Index and Cal Distribution Diff Options}
-    \label{tab:cal_abnormal_price_index}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      DateRange & \begin{tabular}[t]{l}
-        datetime array \\
-        string array    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time for index calculation. \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2020-03-01','2020-07-15'}!. \\
-        Example & \verb!{'2020-01-01','2020-12-31'}!  \\
-                & \verb!["2020-01-01","2020-12-31"]!  \\
-      \end{tabular} \\
-      \midrule
-      City & \begin{tabular}[t]{l}
-        string    \\
-        character array \\
-      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'rto'!. \\
-      \end{tabular}                         \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-\subsubsection{\texttt{cal\_distribution\_diff}}\label{func:cal_distribution_diff}
-
-\begin{Code}
-function output=cal_distribution_diff(market,varargin)
-\end{Code}
-
-Function \verb!cal_distribution_diff! provides an indicator for the difference of price distribution with data from the previous year as baseline. It adopts Wasserstein distance as the measurement method. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
-
-
-
-\subsubsection{\texttt{cal\_excess\_change\_rate}}\label{func:cal_excess_change_rate}
-
-\begin{Code}
-function output=cal_excess_change_rate(market,varargin)
-\end{Code}
-
-Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in Sec.\ref{subsec:excess_change_rate}. The return value is the proposed excess change rate of renewable of the specified market. All parameter names are listed in Table~\ref{tab:cal_excess_change_rate}.
-
-\begin{table}[!ht]
-  \centering
-  \begin{threeparttable}
-    \caption{Cal Excess Change Rate Options}
-    \label{tab:cal_excess_change_rate}
-    \footnotesize
-    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
-      \toprule
-      Name & Type & Description \\
-      \midrule
-      DateRange & \begin{tabular}[t]{l}
-        datetime array \\
-        string array    \\
-        cell array of character vectors \\
-      \end{tabular} & Range of time for index calculation. \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!{'2017-01-01','2020-07-15'}!. \\
-        Example & \verb!{'2017-01-01','2020-12-31'}!  \\
-                & \verb!["2017-01-01","2020-12-31"]!  \\
-      \end{tabular} \\
-      \midrule
-      City & \begin{tabular}[t]{l}
-        string    \\
-        character array \\
-      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'rto'!. \\
-      \end{tabular}                         \\
-      \bottomrule
-    \end{tabular}
-  \end{threeparttable}
-\end{table}
-
-
-
-%---------------------------------
-\newpage
-\section{Regression Analysis} \label{sec:regression}
-
-\subsection{Regression Methodology}
-To interpret the changes in electricity consumption during pandemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account. 
-
-Restried Vector Autoregression (Restricted VAR) models are implemented in \covemda. Restricted VAR models are powerful tools for multivariate time series analysis with complex correlations.
-
-Vector autoregression (VAR)\cite{var} is a stochastic process model that can be used to capture the linear correlation between multiple time-series. We model the dynamics of reduction in electricity consumption using a Restricted VAR model of order p as follows:
-
-\begin{equation}
-  X_t=C+A_1X_{t-1}+\dots+A_pX_{t-p}+E_t,
-\end{equation}
-where
-\begin{equation}
-  A_i=
-  \begin{bmatrix}
-  a_{1,1}^i & a_{1,2}^i & \cdots & a_{1,n}^i\\
-  a_{2,1}^i & a_{2,2}^i & \cdots & a_{2,n}^i\\
-  \vdots & \vdots & \ddots & \vdots \\
-  a_{n,1}^i & a_{n,2}^i & \cdots & a_{n,n}^i\\
-  \end{bmatrix}
-  ,X_t=
-  \begin{bmatrix}
-    x_t^1\\x_t^2\\\vdots\\x_t^n
-  \end{bmatrix},
-  C=
-  \begin{bmatrix}
-    c^1\\c^2\\\vdots\\c^n
-  \end{bmatrix},
-  E_t=
-  \begin{bmatrix}
-    e_t^1\\e_t^2\\\vdots\\e_t^n
-  \end{bmatrix},
-\end{equation}
-in which $A_i$ is the regression matrix, $x_t^1$ represents the target output variable at time $t$, namely the reduction in electricity consumption we wish to model, $x_t^2,\cdots,x_t^n$ represent the selected $n-1$ parameter variables including confirmed case numbers, stay-at-home population, median home dwell time rate, population of on-site workers, mobility in the retail sector and etc., $C$ and $E_t$ are respectively column vectors of intercept and random errors, and the time notation $t-p$ represents the $p$-th lag of the variables.
-
-\subsection{Factor Analysis}
-The full procedure of building the restricted VAR model mainly contains four steps as follows, including pre-estimation preparation, restricted VAR model estimation, restricted VAR model verification, and post-estimation analysis.
-\subsubsection{Pre-estimation Preparation}
-\begin{itemize}
-  \item Data Preprocessing: Several datasets are collected to calculate the inputs of restricted VAR model, including electricity market data, weather data, number of COVID-19 cases, and mobile device location data. We take logarithms of several variables, including electricity consumption reduction, new daily confirmed cases, stay-at-home population, population of full-time on-site workers, population of part-time on-site workers, and mobility in the retail sector, while only keeping the original value of the median home dwell time rate.
-  \item Augmented Dickey-Fuller (ADF) Test: Test whether a time-series variable is non-stationary and possesses a unit root.
-  \item Cointegration Test: Test the long-term correlation between multiple non-stationary time-series.
-  \item Granger Causality Wald Test: Estimate the causality relationship among two variables represented as time-series.
-\end{itemize}
-\subsubsection{Restricted VAR Model Estimation}
-\begin{itemize}
-  \item  Ordinary Least Square (OLS): We impose constraints on the OLS to eliminate any undesirable causal relationships between variables.
-\end{itemize}
-\subsubsection{Restricted VAR Model Verification}
-\begin{itemize}
-  \item ADF Test: Verify if the residual time-series are non-stationary and possess a unit root.
-  \item Ljung-Box Test: Verify the endogeneity of the residual data that may render the regression result untrustworthy.
-  \item Durbin-Watson Test: Detect the presence of autocorrelation at log 1 in the residuals of the Restricted VAR model.
-  \item Robustness Test: Test the robustness of the Restricted VAR model against parameter perturbations.
-\end{itemize}
-\subsubsection{Post-estimation Analysis}
-\begin{itemize}
-  \item Impulse Response Analysis: Describe the evolution of the Restricted VAR model’s variable in response to a shock in one or more variables.
-  \item Forecast Error Variance Decomposition: Aid in the interpretation of the Restricted VAR model by determining the proportion of each variable’s forecast variance that is contributed by shocks to the other variables.
-\end{itemize}
-
-
-
-
-\subsection{Functions}
-
 
 
 %------------------------------------------------
 \newpage
 \section{Acknowledgments} \label{sec:thanks}
 
-We would like to acknowledge 
-This work is supported in part by funding from Student Research Training Project of Tsinghua University.
+The \covemda{} Project is supported in part by funding from Student Research Training Program of Tsinghua University.
 
-We would like to acknowledge the professors and judges' suggestions during Tsinghua University Challenge Cup Competition. We are grateful to Niklas Kolbe and Mr.Brackets as well.
+Meanwhile, we would like to acknowledge the professors and judges' suggestions during Tsinghua University Challenge Cup Competition. Thanks to Niklas Kolbe and Mr.Brackets as well.
 
-Last but not least, thanks to the support of EI-LAB of Department of Electrical Engineering.
+Last but not least, we are grateful for the support of EI-LAB of Department of Electrical Engineering.
 
 
 
@@ -1861,7 +1971,7 @@ Folder \verb!data_temp! contains the temporary files of the toolbox, with two su
 
 
 
-\subsection{Functions}
+\subsection{Functions}  \label{subsec:func_list}
 
 Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found in the root directory, \covemda{} functions are typically divided into three levels: high level, low level and basic operations, which are also the corresponding folder names. All the high-level and low-level functions are illustrated above at the end of Sec.\ref{sec:visual}, Sec.\ref{sec:baseline} and Sec.\ref{sec:regression}.
 
