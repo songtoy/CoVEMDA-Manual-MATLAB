@@ -33,7 +33,7 @@
 \usepackage[noadjust]{cite}
 \usepackage{xr-hyper}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,hyperfootnotes=false,backref=section,citecolor=LimeGreen]{hyperref}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,hyperfootnotes=false,citecolor=LimeGreen]{hyperref}
 \usepackage{upquote}
 \usepackage[title,titletoc]{appendix}
 
@@ -66,19 +66,67 @@
 \definecolor{SepColor}{HTML}{6ab0de}
 \definecolor{DarkGreen}{rgb}{0.0,0.4,0.0}
 
-\lstnewenvironment{Code}
-    {\lstset{
-        language=matlab,
-        frame=shadowbox, 
-        frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
-        basicstyle=\ttfamily,
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage[framemethod=tikz]{mdframed}
+\usepackage{lipsum}
+
+
+%Command Window
+\definecolor{DarkBlue}{RGB}{0,64,115} 
+\mdfdefinestyle{commandline}%
+{leftmargin=5pt, rightmargin=10pt, innerleftmargin=15pt, 
+ middlelinecolor=DarkBlue, 
+ middlelinewidth=2pt, 
+ frametitlerule=false,
+ backgroundcolor=white, 
+ frametitle={Command Window}, 
+ frametitlefont={\small\sffamily\color{white}\hspace{-1em}}, 
+ frametitlebackgroundcolor=DarkBlue, 
+ singleextra={\draw[black!15,line width=12pt] 
+        ($(O)+(7pt,1pt)$) -- 
+        ($(O|-P)+(7pt,-\mdfframetitleboxtotalheight)-(0,1pt)$); 
+        \node[inner sep=0pt,color=black]at ($(O)+(7pt,9pt)$)% 
+        {$\scriptstyle f\!x$}; }, 
+ nobreak, 
+}
+\lstnewenvironment{Command} {%
+    \lstset{
+        language=Matlab,
+        basicstyle=\small\ttfamily,
+        commentstyle=\color{DarkGreen},
+        breaklines=true,
+        aboveskip=0pt,belowskip=0pt%
+        }}
+    {}
+\surroundwithmdframed[style=commandline]{Command}
+
+\mdfdefinestyle{sourcecode}%
+{leftmargin=5pt, rightmargin=10pt, innerleftmargin=15pt, 
+ middlelinecolor=DarkBlue, 
+ middlelinewidth=2pt, 
+ frametitlerule=false,
+ backgroundcolor=white, 
+ frametitle={Function Definition}, 
+ frametitlefont={\small\sffamily\color{white}\hspace{-1em}}, 
+ frametitlebackgroundcolor=DarkBlue, 
+ singleextra={\draw[black!15,line width=12pt] 
+        ($(O)+(7pt,1pt)$) -- 
+        ($(O|-P)+(7pt,-\mdfframetitleboxtotalheight)-(0,1pt)$); }, 
+ nobreak, 
+}
+\lstnewenvironment{Code} {%
+    \lstset{
+        language=Matlab,
+        basicstyle=\small\ttfamily,
         commentstyle=\color{DarkGreen},
         stringstyle=\color{purple},
         keywordstyle=\bfseries\color{blue},
-        backgroundcolor=\color{BackgroundColor}%
-        %rulesepcolor=\color{SepColor}%
+        breaklines=true,
+        aboveskip=0pt,belowskip=0pt%
         }}
     {}
+\surroundwithmdframed[style=sourcecode]{Code}
 
         
 \def\sectionautorefname{Chapter}
@@ -149,10 +197,9 @@ This manual is accompanied by the above website. The website refers to the GitHu
 
 \subsection{Background}
 
-With high contagiousness and long incubation period\cite{who2021}, the COVID-19 pandemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the operation of power system has been greatly threatened by the pandemic, Tsinghua University and Texas A\&M University developed the COVID-EMDA+ Dataset, to track and measure the impact of COVID-19 on the electricity sector.
+With high contagiousness and long incubation period\cite{who2021}, the COVID-19 pandemic has not only endangered the human life and health, but also seriously affected the economy worldwide. Considering that the operation of power system has been greatly threatened by the pandemic\cite{gillingham2020short}\cite{zhong2020implications}\cite{elavarasan2020covid}, Tsinghua University and Texas A\&M University developed the COVID-EMDA+ Dataset, to track and measure the impact of COVID-19 on the electricity sector.
 
-
-It was believed that the analysis on the cross-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for researchers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a unique case-study on the correlations among various factors in complex power system.
+It was believed that the analysis on the cross-domain data might provided great assistance and support for relevant research concerning the policy development on public health emergencies. On the other hand, it has been increasingly urgent for researchers to explore the actual influences of human interventions like Demand Response (DR) on large-scale power system. From this aspect, changes in residential electricity consumption during the COVID-19 constructed a unique case-study on the correlations among various factors in complex power system\cite{ruan2020cross}\cite{ruan2021quantitative}.
 
 Therefore, a more comprehensive MATLAB toolbox named CoVEMDA was motivated for analysis. Based on COVID-EMDA+ Dataset, CoVEMDA is designed for functionalities including \textbf{Data Visualization}, \textbf{Baseline Estimation} and \textbf{Regression Analysis}, as well as other useful supplementary functions.
 \subsection{Features}
@@ -294,11 +341,11 @@ To be note, this option required \href{https://git-scm.com/}{Git}/\href{https://
 
 \subsubsection{Baseline Estimation with Ensemble Backcast Model}\label{subsec:eg_baseline}
 
-\covemda{} provides an efficient tool for load baseline estimation: ensemble backcast model. The corresponding function \verb!cal_baseline! and \verb!plot_baseline! enables the user to calculate and visualize the electricity consumption level without the impact of the pandemic. See Sec.\ref{sec:baseline} for more information.
+\covemda{} provides an efficient tool for load baseline estimation: ensemble backcast model. The corresponding function \verb!cal_baseline! and \verb!plot_baseline! enables the user to calculate and visualize the electricity consumption level without the impact of the pandemic. See Section~\ref{sec:baseline} for more information.
 
 For example, to calculate the baseline of NYISO, the user may enter: (command output omitted)
 
-\begin{Code}
+\begin{Command}
 >> t=cal_baseline('nyiso')
 
 t =
@@ -313,11 +360,11 @@ t =
        0.5      {151x25 table}
       0.75      {151x25 table}
        0.9      {151x25 table}
-\end{Code}
+\end{Command}
 
 Access data for q=0.5:
 
-\begin{Code}
+\begin{Command}
 >> t.result{3}
 
 ans =
@@ -331,13 +378,13 @@ ans =
     2020-02-02    15304    14793    14456    ...    16608    15735
     ...
     2020-06-30    16119    15376    14959    ...    18524    17146
-\end{Code}
+\end{Command}
 
 If the user needs to visualize the baseline: (command output omitted)
 
-\begin{Code}
+\begin{Command}
 >> plot_baseline('nyiso','Method','backcast');
-\end{Code}
+\end{Command}
 
 The result is displayed in Figure~\ref{fig:backcast_eg}.
 
@@ -349,8 +396,69 @@ The result is displayed in Figure~\ref{fig:backcast_eg}.
 
 
 
-\subsubsection{Regression Analysis}
+\subsubsection{Regression Analysis}\label{subsec:eg_regression}
 
+\covemda{} is also capable of regression analysis. The corresponding function \verb!OLS! and \verb!VAR! provide regression models in which users may acquire correlation figures between variables. See Section~\ref{sec:regression} for more information.
+
+For example, to apply a linear OLS model to the social distancing data of CAISO, the user may enter:
+
+\begin{Command}
+>> t=basic_read('caiso_rto_lmp')
+
+t =
+
+  1462x25 table
+
+       date       00:00     01:00     02:00             ...
+    __________    ______    ______    ______            ...
+
+    2017-01-19     21.53     21.69     20.86            ...
+    2017-01-20     26.46     24.67     23.68            ...
+    2017-01-21     30.83     28.37     28.19            ...
+    2017-01-22     27.33     26.5      25.14            ...
+                ...                  ...                ...
+
+>> t=exchange_columns(t,1,4)
+
+t =
+
+  1462x25 table
+
+    02:00     00:00     01:00        date    
+    ______    ______    ______    __________            ...
+
+    20.86     21.53     21.69     2017-01-19            ...
+    23.68     26.46     24.67     2017-01-20            ...
+    28.19     30.83     28.37     2017-01-21            ...
+    25.14     27.33     26.5      2017-01-22            ...
+            ...                  ...                    ...
+            
+>> b=OLS(t,3,'linear')
+               OLS Regerssion Results 
+====================================================
+           Model:                      OLS
+           Method:           Least Squares
+           Date:      29-Jun-2021 17:17:08
+           Time:                   0.007 s
+           R-squared:                0.984
+           Adj. R-squared:           0.984
+           F-statistic:              46073.89
+           Prob (F-statistic):     
+====================================================
+        coef        std err        t         P>|t|      
+     -0.35065     0.099122      -3.5376   0.00041647
+     -0.15432     0.018966      -8.1368    8.605e-16
+       1.1334     0.019961       56.781            0
+
+
+b =
+
+     -0.35065
+     -0.15432
+       1.1334
+\end{Command}
+
+Users may check the feasibility of the regression by figures in the printed chart. One direct way is to check the \verb!t value! of the regress coefficients. As for the linear OLS above, the first coefficient has the \verb!t value! of -3.5376, meaning that the possibility of P greater than $|t|$ is $2.37 \times 10^-5 << 0.05$. This suggests that the regression is feasible, and if the value is greater than $0.05$, user may rethink about the feasibility of this regression.
 
 
 %----------------------------------------
@@ -496,24 +604,24 @@ Data quality control mainly includes two aspects: outlier detection and missing 
 \newpage
 \section{Baseline Estimation} \label{sec:baseline}
 
-Baseline refers to the basis of comparison with or without certain factor. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
+Baseline refers to the basis of comparison with or without certain factor\cite{wijaya2014bias}\cite{mohajeryami2016error}. Here, baseline estimation provides the control group for analysis of the impact of COVID-19 on electricity consumption. Traditional method for baseline estimation usually involves selecting specific days of the same patterns in the past, and integrating corresponding historical data. Such methods rely heavily on the principle for similar date selection, reducing their robustness and accuracy. By contrast, \textbf{ensemble backcast model} utilizes deep neural networks and multi-dimensional historical data to produce a more reliable baseline. In practice, as the default algorithm for baseline estimation in \covemda{}, it accurately reflects the normal trend of electricity consumption in the absence of the pandemic.
 
-\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. Unlike \verb!cal_baseline!, here multiple methods can be appointed for comparison. See Sec.\ref{func:cal_baseline} and Sec.\ref{func:plot_baseline} for more detail.
+\covemda{} function \verb!cal_baseline! provides a uniform tool for baseline calculation by either date alignment, week index alignment or backcast estimation. In addition, \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, and plots them in one graph. Unlike \verb!cal_baseline!, here multiple methods can be appointed for comparison. See Section~\ref{func:cal_baseline} and Section~\ref{func:plot_baseline} for more detail.
 
 
 
 \subsection{Date and Week Alignment}
 
-Date alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same date and month in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_dates!. See Sec.\ref{func:cal_baseline_by_dates} for more detail.
+Date alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same date and month in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_dates!. See Section~\ref{func:cal_baseline_by_dates} for more detail.
 
-Week index alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same week and day of week in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_week_index!. See Sec.\ref{func:cal_baseline_by_week_index} for more detail.
+Week index alignment for baseline estimation refers to calculating the load baseline by searching for the load data of the exact same week and day of week in the previous year. This calculation process is performed by \covemda{} function \verb!cal_baseline_by_week_index!. See Section~\ref{func:cal_baseline_by_week_index} for more detail.
 
 
 
 \subsection{Ensemble Backcast Estimation}
 The \textbf{Ensemble Backcast Model} is used to estimate the electricity consumption profile in the absence of COVID-19 pandemic, so that the comparison between the model and actual metered electricity consumption can be used to quantify the impact of COVID-19.
 
-A backcast model is expressed as a function that maps potential factors that may affect electricity consumption level, including weather variables (such as temperature, humidity and wind speed), date of year, and economic prosperity (yearly GDP growth rate) to the estimated electricity consumption. Given a group of backcast models, ensemble forecasting is widely recognized as the best approach to provide rich interval information. A group of backcast models for the daily average electricity consumption can be described by
+A backcast model is expressed as a function that maps potential factors that may affect electricity consumption level, including weather variables (such as temperature, humidity and wind speed), date of year, and economic prosperity (yearly GDP growth rate) to the estimated electricity consumption. Given a group of backcast models, ensemble forecasting is widely recognized as the best approach to provide rich interval information\cite{gosink2013characterizing}. A group of backcast models for the daily average electricity consumption can be described by
 
 \begin{equation*}
   \hat L_{md}=\frac{1}{N}\sum\limits_{i=1}^N \hat f_i(C_{md}, T_{mdq}, H_{mdq}, S_{mdq}, E),\forall m,d
@@ -529,7 +637,7 @@ where
 \end{itemize}
 We typically include 25\%, 50\% (average value), 75\% and 100\%(maximium) quantiles, and the final inputs should be decided based on the the data after extensive testing.
 
-In \covemda{}, this calculation process is performed by function \verb!cal_baseline_by_backcast!. See Sec.\ref{func:cal_baseline_by_backcast} for more detail.
+In \covemda{}, this calculation process is performed by function \verb!cal_baseline_by_backcast!. See Section~\ref{func:cal_baseline_by_backcast} for more detail.
 
 
 
@@ -549,7 +657,7 @@ The statistical meaning of the above index is explained by the probability densi
   \label{fig:abnormal_price_index}
 \end{figure}
 
-In \covemda{}, the abnormal price index is calculated by function \verb!cal_abnormal_price_index!. More detail is available in Sec.\ref{func:cal_abnormal_price_index}.
+In \covemda{}, the abnormal price index is calculated by function \verb!cal_abnormal_price_index!. More detail is available in Section~\ref{func:cal_abnormal_price_index}.
 
 \subsection{Price Distribution Change Across Different Areas}\label{subsec:cal_distribution_diff}
 
@@ -570,7 +678,7 @@ One simple way to quantify the changes of renewable share during the COVID-19 pa
 \end{equation*}
 where $\eta$ is the excess change rate, and $r_{2018}\sim r_{2020}$ are the market shares of renewable energy observed in 2018, 2019 and 2020.
 
-In \covemda{}, the excess change rate of renewable in various markets is provided by function \verb!cal_excess_change_rate!. This function reads the generation mix data from the data hub, and calculates the corresponding excess change rate according to the formula above. More detail is available in Sec.\ref{func:cal_excess_change_rate}.
+In \covemda{}, the excess change rate of renewable in various markets is provided by function \verb!cal_excess_change_rate!. This function reads the generation mix data from the data hub, and calculates the corresponding excess change rate according to the formula above. More detail is available in Section~\ref{func:cal_excess_change_rate}.
 
 
 
@@ -586,9 +694,9 @@ function t_output=cal_baseline(market,varargin)
 
 In practice, since this function calls the following low-level functions concerning baseline estimation, all the other arguments are passed on to them. For instance, to train the ensemble backcast model with specified model numbers before estimating baseline, the user may call the function like this:
 
-\begin{Code}
+\begin{Command}
 >> cal_baseline('nyiso','TrainModel',1,'ModelNum',[10,3]);
-\end{Code}
+\end{Command}
 
 Although argument \verb!TrainModel! and \verb!ModelNum! belong to the low-level function \verb!cal_baseline_by_backcast!, it is recommended to specify them when calling high-level function \verb!cal_baseline!. See Table~\ref{tab:cal_baseline} for a full list of arguments.
 
@@ -621,7 +729,7 @@ Although argument \verb!TrainModel! and \verb!ModelNum! belong to the low-level 
                 & \verb!'2020-04-01'!  \\
       \end{tabular} \\
       \midrule
-      Others & & See Sec.\ref{func:cal_baseline_by_dates}, Sec.\ref{func:cal_baseline_by_week_index} and Sec.\ref{func:cal_baseline_by_backcast}. \\
+      Others & & See Section~\ref{func:cal_baseline_by_dates}, Section~\ref{func:cal_baseline_by_week_index} and Section~\ref{func:cal_baseline_by_backcast}. \\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -637,7 +745,7 @@ function gr_handles=plot_baseline(market,varargin)
 
 \covemda{} offers a tool for simple visualization of different baseline estimation methods: \verb!plot_baseline!. This function calculates the load baseline with different estimation methods by \verb!cal_baseline!, plots them in one graph, and returns the handles of graphic objects. The user can appoint the methods to be plotted by specifying the value of name-value pair argument \verb!Method!. Unlike \verb!cal_baseline!, here the parameter value can be multiple method names in the form of cell arrays or string arrays, etc. If so, \verb!cal_baseline! is called for each estimation method.
 
-The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin!, \verb!ResampleMethod! as well, just like the visualization functions in Sec.\ref{sec:visual}. See Table~\ref{tab:plot_baseline} for a full list of arguments.
+The user can specify the bin and method for resampling data of the plot by argument \verb!ResampleBin!, \verb!ResampleMethod! as well, just like the visualization functions in Section~\ref{sec:visual}. See Table~\ref{tab:plot_baseline} for a full list of arguments.
 
 \begin{table}[!ht]
   \centering
@@ -674,7 +782,7 @@ The user can specify the bin and method for resampling data of the plot by argum
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{func:cal_baseline}. \\
+      Others & & See Section~\ref{func:cal_baseline}. \\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -792,7 +900,7 @@ If the user chooses not to train models but to use pre-trained models, the funct
         Default & 1. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{func:backcast_import_data}, Sec.\ref{func:backcast_scan_training}, Sec.\ref{func:backcast_test_model} and Sec.\ref{func:backcast_scan_prediction}. \\
+      Others & & See Section~\ref{func:backcast_import_data}, Section~\ref{func:backcast_scan_training}, Section~\ref{func:backcast_test_model} and Section~\ref{func:backcast_scan_prediction}. \\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -862,7 +970,7 @@ t_YTest,model_sel,varargin);
 
 Function \verb!backcast_test_model! is the subfunction of \verb!cal_baseline_by_backcast!, in charge of selecting the best deep neural networks. This function selects the best \verb!model_sel! models using the testing set. \verb!t_net_sel! is a table of the selected models, and \verb!t_net_all! is still the table of all models, with the information (testing accuracy, sign of selection) of the test.
 
-The only additional argument here is \verb!TrainVerbose!, which is the same as the one in Sec.\ref{func:backcast_scan_training}.
+The only additional argument here is \verb!TrainVerbose!, which is the same as the one in Section~\ref{func:backcast_scan_training}.
 
 
 
@@ -907,7 +1015,7 @@ Function \verb!backcast_scan_prediction! is the subfunction of \verb!cal_baselin
 function output=cal_abnormal_price_index(market,varargin)
 \end{Code}
 
-Function \verb!cal_abnormal_price_index! calculates the proposed abnormal index in Sec.\ref{subsec:abnormal_price_index}. The output is a table containing abnormal price index and corresponding date. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
+Function \verb!cal_abnormal_price_index! calculates the proposed abnormal index in Section~\ref{subsec:abnormal_price_index}. The output is a table containing abnormal price index and corresponding date. All parameter names are listed in Table~\ref{tab:cal_abnormal_price_index}.
 
 \begin{table}[!ht]
   \centering
@@ -960,7 +1068,7 @@ Function \verb!cal_distribution_diff! provides an indicator for the difference o
 function output=cal_excess_change_rate(market,varargin)
 \end{Code}
 
-Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in Sec.\ref{subsec:excess_change_rate}. The return value is the proposed excess change rate of renewable of the specified market. All parameter names are listed in Table~\ref{tab:cal_excess_change_rate}.
+Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in Section~\ref{subsec:excess_change_rate}. The return value is the proposed excess change rate of renewable of the specified market. All parameter names are listed in Table~\ref{tab:cal_excess_change_rate}.
 
 \begin{table}[!ht]
   \centering
@@ -1001,22 +1109,22 @@ Function \verb!cal_excess_change_rate! calculates the proposed abnormal index in
 
 In this section, we introduce the usage of the functions above with several examples. It is recommended to use feature-oriented high-level functions (see \ref{subsec:func_list}), and the following explanations and instructions are designed for them.
 
-All high-level functions mentioned above (\verb!cal_baseline!, \verb!plot_baseline!, \verb!cal_abnormal_price_index!, \verb!cal_distribution_diff! and \verb!cal_excess_change_rate!) have similar input forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
+All high-level functions mentioned above (\verb!cal_baseline!, \verb!plot_baseline!, \verb!cal_abnormal_price_index!, \verb!cal_distribution_diff! and \verb!cal_excess_change_rate!) have similar input forms and can be used similarly. To be specific, the first input argument (market name) is compulsory, and all the other input arguments are optional. The market name is specified as one of the seven terms:
 
 \begin{center}
   \verb!'caiso' | 'ercot' | 'isone' | 'miso' | 'nyiso' | 'pjm' | 'spp'!
 \end{center}
 
-As long as the market name is given, a basic version of the desired result can be simply obtained, which is illustrated in Sec.\ref{subsec:eg_baseline}. All the other input arguments should be in the form of \textbf{name-value pairs} for the function to correctly recognize.
+As long as the market name is given, a basic version of the desired result can be simply obtained, which is illustrated in Section~\ref{subsec:eg_baseline}. All the other input arguments should be in the form of \textbf{name-value pairs} for the function to correctly recognize.
 
-\begin{Code}
+\begin{Command}
 cal_baseline(market,'argument_name1',argument_value1,'argument_name2',
 argument_value2,...);
-\end{Code}
+\end{Command}
 
 For example, if the user needs to train a new ensemble backcast model with less networks for baseline estimation:
 
-\begin{Code}
+\begin{Command}
 >> t_retrain=cal_baseline('caiso','TrainModel',1,'ModelNum',[10,8]);
 Training, 10 models in total.
 --Training Model #1, number of hidden units: 34  60.
@@ -1056,32 +1164,32 @@ t_retrain =
        0.5      {151x25 table}
       0.75      {151x25 table}
        0.9      {151x25 table}
-\end{Code}
+\end{Command}
 
-As illustrated in Sec.\ref{func:cal_baseline_by_backcast}, this function returns a table whose first column is the quantiles \verb![0.1,0.25,0.5,0.75,0.9]!, and each element in the second column is a table containing dates and baseline for corresponding quantile. Summary of the newly trained model can be found at:
+As illustrated in Section~\ref{func:cal_baseline_by_backcast}, this function returns a table whose first column is the quantiles \verb![0.1,0.25,0.5,0.75,0.9]!, and each element in the second column is a table containing dates and baseline for corresponding quantile. Summary of the newly trained model can be found at:
 \begin{center}
     \verb!<CoVEMDA_root_directory>\data_temp\backcast\models\caiso_rto\Model_<timestamp>\Summary.csv!
 \end{center}
 
-For function \verb!plot_baseline!, its legal parameters include both \verb!cal_baseline! options and modifications of the plot. Like the functions in Sec.\ref{sec:visual}, the user can change property values of the chart after calling this function. For example, if the user needs to visualize different baselines: (command output omitted)
+For function \verb!plot_baseline!, its legal parameters include both \verb!cal_baseline! options and modifications of the plot. Like the functions in Section~\ref{sec:visual}, the user can change property values of the chart after calling this function. For example, if the user needs to visualize different baselines: (command output omitted)
 
-\begin{Code}
+\begin{Command}
 >> handles=plot_baseline('nyiso','DateRangeCovid','2020-04-01');
 >> handles{6}.Color='#d95319';
-\end{Code}
+\end{Command}
 
 Add the observed demand data to the graph and adjust x-axis labels:
 
-\begin{Code}
+\begin{Command}
 >> plot_demand('nyiso','DateRange','2020-04-01','DisplayName',
    'observed','Color','#edb120');
 >> ax=gca;
 >> ax.XTickLabel=strcat(string([0:2:22,23]),":00");
-\end{Code}
+\end{Command}
 
-The result is displayed in Figure~\ref{fig:baseline_eg1}. For the baseline estimated by ensemble backcast model, the intervals are represented with areas of different brightness, indicating the distribution, which is the same as \verb!plot_quantile! in Sec.\ref{func:plot_area}.
+The result is displayed in Figure~\ref{fig:baseline_eg1}. For the baseline estimated by ensemble backcast model, the intervals are represented with areas of different brightness, indicating the distribution, which is the same as \verb!plot_quantile! in Section~\ref{func:plot_area}.
 
-\begin{figure}
+\begin{figure}[htbp]
   \centering
   \noindent\includegraphics[width=0.8\textwidth]{figures/baseline_example1.jpg}
   \caption{Example: Baseline and Observed Demand of NYISO} \label{fig:baseline_eg1}
@@ -1092,14 +1200,12 @@ The result is displayed in Figure~\ref{fig:baseline_eg1}. For the baseline estim
 %---------------------------------
 \newpage
 \section{Regression Analysis} \label{sec:regression}
-
-\subsection{Regression Methodology}
  
 To interpret the changes in electricity consumption during pandemic, three potential factors, namely, public health, social distancing, and the level of commercial activities, should be taken into account.In this section, we hereby introduce two regression methods to study the relationships between influential factors and electricity consumption.
 
 Moreover, \covemda \quad supports regression based on any factors, including external data inputs. Users may define how the factors are regressed, including by linear, interaction, quadratic or pure-quadratic methods.
 
-\subsubsection{OLS}
+\subsection{OLS}\label{subsec:ols}
 
 Ordinary least squares(OLS) models are implemented in \covemda. It includes linear and non-linear models and offers multiple choices for model fitting. Besides, \covemda \quad also support correlation analysis for variables either from COVID-EMDA+ or from external sources.
 
@@ -1108,7 +1214,7 @@ Ordinary least squares(OLS) models are implemented in \covemda. It includes line
 \end{equation}
 Ordinary least squares aim for the minimum value of the formula above, in which $L_i(x)$ is the residual function. If $L_i(x)$ is a linear function about $x$, the optimization problem is called 'linear least squares problem', while nonlinear ones are addressed as 'nonlinear least squares problems'. 
 
-\subsubsection{VAR}
+\subsection{VAR}\label{subsec:var}
 
 
 Restricted Vector Autoregression (Restricted VAR) models are implemented in \covemda as well. Restricted VAR models are powerful tools for multivariate time series analysis with complex correlations.
@@ -1142,7 +1248,6 @@ where
 \end{equation}
 in which $A_i$ is the regression matrix, $x_t^1$ represents the target output variable at time $t$, namely the reduction in electricity consumption we wish to model, $x_t^2,\cdots,x_t^n$ represent the selected $n-1$ parameter variables including confirmed case numbers, stay-at-home population, median home dwell time rate, population of on-site workers, mobility in the retail sector and etc., $C$ and $E_t$ are respectively column vectors of intercept and random errors, and the time notation $t-p$ represents the $p$-th lag of the variables.
 
-\subsection{Factor Analysis}
 The full procedure of building the restricted VAR model mainly contains four steps as follows, including pre-estimation preparation, restricted VAR model estimation, restricted VAR model verification, and post-estimation analysis.
 \subsubsection{Pre-estimation Preparation}
 \begin{itemize}
@@ -1169,17 +1274,23 @@ The full procedure of building the restricted VAR model mainly contains four ste
 \end{itemize}
 
 
+\subsection{Functions}\label{subsec:functions}
 
-
-\subsection{Functions}
-
-\subsubsection{\texttt{OLS}}\label{func:OLS}
+\subsubsection{\texttt{exchange\_columns}}\label{func:exchange_columns}
 
 \begin{Code}
-function output=OLS(table,varnum,varagin)
+function output=exchange_columns(table,column1,column2)
 \end{Code}
 
-Function \verb!OLS! gives a solution to the regression model in Sec.\ref{subsec:OLS}. The output is a printed table containing regression vector and correlation analysis. All parameter names are listed in Table~\ref{tab:OLS}.
+Function \verb!exchange_columns! provides a function for columns exchange in tables. The inputs includes the table to be operated, the number or title of the two columns to be exchanged. The output of this function is the new table whose columns have been exchanged.
+
+\subsubsection{\texttt{OLS}}\label{func:OLS}\label{subsubsec:OLS}
+
+\begin{Code}
+function output=OLS(table,varnum,varargin)
+\end{Code}
+
+Function \verb!OLS! gives a solution to the regression model in Section~\ref{subsec:ols}. The output is a printed table containing regression vector and correlation analysis. All parameter names are listed in Table~\ref{tab:OLS}.
 
 \begin{table}[!ht]
   \centering
@@ -1191,21 +1302,241 @@ Function \verb!OLS! gives a solution to the regression model in Sec.\ref{subsec:
       \toprule
       Name & Type & Description \\
       \midrule
-     table & input & Vectors of variables for regression\\
+     table & input & Table of variable vectors for regression\\
            \midrule
-     varname & input & Vectors of variables for regression\\
+     varnum & input & Numbers of input variable vectors\\
       \midrule
-      City & \begin{tabular}[t]{l}
-        string    \\
-        character array \\
-      \end{tabular} & Abbreviation of the target city or \verb!'rto'! for the entire market.  \\
-       & & \begin{tabular}[t]{l @{ -- } l}
-        Default & \verb!'rto'!. \\
+     output & vector & Regression results\\
+      \midrule
+      regression model & \begin{tabular}[t]{l}
+    linear   \\
+    interaction \\
+    quadratic   \\
+    purequadratic \\
+      \end{tabular} &  
+      \begin{tabular}[t]{l}
+    Constant and linear terms  \\ 
+    Constant, linear, and interaction terms  \\
+    Constant, linear, interaction, and squared terms \\
+    Constant, linear, and squared terms\\
+      \end{tabular}\\
+    & & \begin{tabular}[t]{l @{ -- } l}
+        Default & \verb!'linear'!. \\
       \end{tabular}                         \\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
 \end{table}
+
+\subsubsection{\texttt{VAR}}\label{func:VAR}\label{subsubsec:VAR}
+
+\begin{Code}
+function VAR(table,varnum,order)
+\end{Code}
+
+Function \verb!VAR! gives a solution to the regression model in Section~\ref{subsec:var}. The output is a printed table containing regression vector and correlation analysis. Unlike OLS regression model, VAR doesn't distinguish dependent variables and independent variables. It gives an evaluation table of the parameters, listing the coefficient values between each two variables. All parameter names are listed in Table~\ref{tab:OLS}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{threeparttable}
+    \caption{VAR Parameters and Options}
+    \label{tab:OLS}
+    \footnotesize
+    \begin{tabular}{lp{.3\textwidth}p{0.5\textwidth}}
+      \toprule
+      Name & Type & Description \\
+      \midrule
+     table & input & Table of variable vectors for regression\\
+      \midrule
+     varnum & input & Numbers of input variable vectors\\
+      \midrule
+     order & input & order of the VAR model\\                   
+      \bottomrule
+    \end{tabular}
+  \end{threeparttable}
+\end{table}
+
+\subsection{Examples}\label{subsec:examples}
+
+In this section, we introduce the usage of the functions above with several examples. It is recommended to use feature-oriented high-level functions (see \ref{subsec:func_list}), and the following explanations and instructions are designed for them.
+
+All high-level functions mentioned above (\verb!OLS! and \verb!VAR!) have similar input forms and can be used similarly. To be specific, the first input argument (table name) is compulsory, and the basic operation function \verb!basic_read! can help import csv files in format of tables. 
+
+\subsubsection{OLS example}\label{subsec:ols example}
+
+As for function \verb!OLS!, choosing a regression model is an essential step. Four OLS models are provided as follows, with each formula introduced in Section~\ref{subsubsec:OLS}.
+\begin{center}
+  \verb!'linear' | 'interaction' | 'quadratic' | 'purequadratic'!
+\end{center}
+
+As introduced above in Section~\ref{subsubsec:OLS}, the feature-oriented high-level function \verb!OLS! takes form as follows:
+
+\begin{Command}
+OLS(table,varnum,varargin);
+\end{Command}
+
+Meanwhile, user may probably need basic-operation functions \verb!basic_read! and \verb!exchange_columns!, which take forms as follows:
+
+\begin{Command}
+t = basic_read(filename);
+\end{Command}
+
+\begin{Command}
+output = exchange_columns(table,column1,column2)
+\end{Command}
+
+For example, if user needs to do a regression with data from \verb!Covid Emda+ Data Hub!: \verb!'caiso_la_patterns.csv'!, he may do some data-preprocessing before regression. Firstly, user may employ the basic-operation function \verb!basic_read! to import data in table format. Secondly, \verb!OLS! takes the fist column from table as dependent variables by default and the following columns as independent ones. Accordingly, function \verb!exchange_columns! should be applied to exchange columns of table. Last but not least, user may do the regression part. Code example is provided below:
+
+\begin{Command}
+>> t=basic_read('caiso_la_patterns')
+
+t =
+
+  329x4 table
+
+       date       Restaurant_Recreaction    Grocery_Pharmacy      Retail  
+    __________    ______________________    ________________    __________
+
+    2019-12-30          3.2519e+05             1.0855e+05       6.1559e+05
+    2019-12-31          3.1989e+05             1.0976e+05       5.8792e+05
+    2020-01-01          2.3363e+05                  51943       3.6671e+05
+    2020-01-02          2.9873e+05                  90239        5.481e+05
+                ...                                     ...
+
+>> t=exchange_columns(t,1,4)
+
+t =
+
+  329x4 table
+
+      Retail      Restaurant_Recreaction    Grocery_Pharmacy       date   
+    __________    ______________________    ________________    __________
+
+    6.1559e+05          3.2519e+05             1.0855e+05       2019-12-30
+    5.8792e+05          3.1989e+05             1.0976e+05       2019-12-31
+    3.6671e+05          2.3363e+05                  51943       2020-01-01
+     5.481e+05          2.9873e+05                  90239       2020-01-02
+              ...                                     ...
+
+>> b=OLS(t,3,'linear')
+               OLS Regerssion Results 
+====================================================
+           Model:                      OLS
+           Method:           Least Squares
+           Date:      29-Jun-2021 11:59:42
+           Time:                   0.392 s
+           R-squared:                0.996
+           Adj. R-squared:           0.996
+           F-statistic:              38471.97
+           Prob (F-statistic):     
+====================================================
+        coef        std err        t         P>|t|      
+      -8028.9       1872.5      -4.2879   2.3789e-05
+        1.207     0.018001       67.051  8.9386e-193
+       2.0651     0.075663       27.294    3.344e-86
+
+
+b =
+
+      -8028.9
+        1.207
+       2.0651
+
+\end{Command}
+
+
+\subsubsection{VAR example}\label{subsec:var example}
+
+As for function \verb!VAR!, the regression mode is already set. And as introduced above in Section~\ref{subsubsec:VAR}, the feature-oriented high-level function \verb!VAR! takes form as follows:
+
+\begin{Code}
+function VAR(table,varnum,order);
+\end{Code}
+
+Unlike function \verb!OLS!, there is no output for this function. Meanwhile, user may probably need basic-operation functions \verb!basic_read! and \verb!exchange_columns!, which take forms as follows:
+
+\begin{Code}
+function t = basic_read(filename);
+\end{Code}
+
+\begin{Code}
+function output = exchange_columns(table,column1,column2)
+\end{Code}
+
+For example, if user needs to do a VAR with data from \verb!Covid Emda+ Data Hub!: \verb!'caiso_rto_lmp.csv'!, he may do some data-preprocessing before regression. Firstly, user may employ the basic-operation function \verb!basic_read! to import data in table format. 
+\begin{Command}
+>> t=basic_read('caiso_rto_lmp')
+
+t =
+
+  1462x25 table
+
+       date       00:00     01:00     02:00             ...
+    __________    ______    ______    ______            ...
+
+    2017-01-19     21.53     21.69     20.86            ...
+    2017-01-20     26.46     24.67     23.68            ...
+    2017-01-21     30.83     28.37     28.19            ...
+    2017-01-22     27.33     26.5      25.14            ...
+                ...                  ...                ...
+\end{Command}
+
+Secondly, \verb!VAR! takes the fist few columns from table as variables by default, and the other columns remain untouched. Accordingly, function \verb!exchange_columns! should be applied to exchange columns of table. 
+\begin{Command}
+>> t=exchange_columns(t,1,4)
+
+t =
+
+  1462x25 table
+
+    02:00     00:00     01:00        date    
+    ______    ______    ______    __________            ...
+
+    20.86     21.53     21.69     2017-01-19            ...
+    23.68     26.46     24.67     2017-01-20            ...
+    28.19     30.83     28.37     2017-01-21            ...
+    25.14     27.33     26.5      2017-01-22            ...
+            ...                  ...                    ...
+\end{Command}
+
+Last but not least, user may do the VAR part. 
+\begin{Command}
+>> VAR(t,3,2)
+               OLS Regerssion Results 
+====================================================
+           Model:                      VAR
+           Method:           Least Squares
+           Date:      29-Jun-2021 16:06:28
+====================================================
+        coef        std err         t         P>|t|     
+       2.2366       0.3111       7.1893   1.0376e-12
+      0.85631     0.087143       9.8265   4.1469e-22
+    -0.073503     0.064774      -1.1348      0.25666
+      0.16578      0.11112       1.4919      0.13594
+    -0.024319     0.087911     -0.27663       0.7821
+    -0.052469     0.064236     -0.81681      0.41417
+     0.051594       0.1113      0.46356      0.64304
+%% each sub table have 3x2+1=7 rows
+
+        coef        std err         t         P>|t|     
+       2.8308       0.3498       8.0927   1.2202e-15
+       0.3993     0.097985       4.0751    4.847e-05
+      0.31999     0.072833       4.3934   1.1966e-05
+       0.2698      0.12494       2.1594     0.030985
+      -0.1529     0.098849      -1.5468      0.12213
+      0.13715     0.072228       1.8989     0.057782
+    -0.025913      0.12515     -0.20706      0.83599
+
+
+        coef        std err         t         P>|t|     
+       2.6695      0.32137       8.3065   2.2288e-16
+      0.57071     0.090021       6.3398   3.0629e-10
+     0.031848     0.066913      0.47596      0.63417
+      0.36905      0.11479        3.215    0.0013332
+    -0.085903     0.090815     -0.94591      0.34435
+    -0.022497     0.066357     -0.33903      0.73463
+     0.064468      0.11498      0.56071      0.57508
+\end{Command}
 
 
 %--------------------------------------------
@@ -1216,11 +1547,11 @@ Function \verb!OLS! gives a solution to the regression model in Sec.\ref{subsec:
 
 After the COVID-19 outbreak, the total generation as well as generation share of each market in U.S. varied. In order to analyse this change, we may observe the generation data in scale of time or of generation fuels. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
 
-In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Function \verb!plot_generation_mix! plots the generation mix data in the form of filled areas, and function \verb!plot_renewable_share! plots the renewable share data in the form of a line chart. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub. See Sec.\ref{func:plot_generation_mix} and Sec.\ref{func:plot_renewable_share} for more detail.
+In \covemda{}, two typical tools regarding different scales are provided for generation analysis: \verb!plot_generation_mix! and \verb!plot_renewable_share!. Function \verb!plot_generation_mix! plots the generation mix data in the form of filled areas, and function \verb!plot_renewable_share! plots the renewable share data in the form of a line chart. Both of them obtain relevant data from file \verb!<market_name>_rto_genmix.csv! in the data hub. See Section~\ref{func:plot_generation_mix} and Section~\ref{func:plot_renewable_share} for more detail.
 
-\begin{Code}
+\begin{Command}
 >> plot_generation_mix('spp');
-\end{Code}
+\end{Command}
 
 \begin{figure}[ht]
   \centering
@@ -1236,11 +1567,11 @@ One possible output of function \verb!plot_generation_mix! with default settings
 
 Electric power demand is a significant aspect of power system analysis. After the COVID-19 outbreak, the features of demand profiles across all U.S. electricity markets have experienced several changes, which offer the researchers an important perspective to analyze the relationship between the pandemic, electricity demand patterns and power system operation.
 
-In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_curve!. Function \verb!plot_demand! plots the load data in the form of a line chart, and function \verb!plot_daily_demand_curve! plots the demand distribution curve in the form of multiple areas. Both of them obtain relevant data from file \verb!<market_name>_<city_name>_load.csv! in the data hub. See Sec.\ref{func:plot_demand} and Sec.\ref{func:plot_daily_demand_curve} for more detail.
+In \covemda{}, two typical tools regarding different time scales are provided for demand analysis: \verb!plot_demand! and \verb!plot_daily_demand_curve!. Function \verb!plot_demand! plots the load data in the form of a line chart, and function \verb!plot_daily_demand_curve! plots the demand distribution curve in the form of multiple areas. Both of them obtain relevant data from file \verb!<market_name>_<city_name>_load.csv! in the data hub. See Section~\ref{func:plot_demand} and Section~\ref{func:plot_daily_demand_curve} for more detail.
 
-\begin{Code}
+\begin{Command}
 >> plot_daily_demand_curve('nyiso');
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1256,7 +1587,7 @@ One possible output of function \verb!plot_daily_demand_curve! with default sett
 
 In this section, we provide two typical tools to display the electricity price in U.S. After the COVID-19 outbreak, electricity price become harder to trace. In order to trace the change of electricity price, we may observe the price data of different markets in U.S. and organize them into plots. This may offer a new approach for researchers to find out the structure change of U.S. power grid brought by COVID-19.
 
-In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plot_price_distribution!. Function \verb!plot_price! plots the price data in the form of a line chart, and function \verb!plot_price_distribution! plots the price distribution in the form of a histogram. Both of them obtain relevant data from file \\\verb!<market_name>_<city_name>_lmp.csv! in the data hub. See Sec.\ref{func:plot_price} and Sec.\ref{func:plot_price_distribution} for more detail.
+In \covemda{}, two typical tools regarding different scales are provided for price analysis: \verb!plot_price! and \verb!plot_price_distribution!. Function \verb!plot_price! plots the price data in the form of a line chart, and function \verb!plot_price_distribution! plots the price distribution in the form of a histogram. Both of them obtain relevant data from file \\\verb!<market_name>_<city_name>_lmp.csv! in the data hub. See Section~\ref{func:plot_price} and Section~\ref{func:plot_price_distribution} for more detail.
 
 
 
@@ -1264,7 +1595,7 @@ In \covemda{}, two typical tools regarding different scales are provided for pri
 
 Mobility is a factor directly related with the pandemic. Here 'mobility' means the number of visits to business premises, indicating the level of commercial activities. During COVID-19, the mobility in various sectors have experienced dramatic reduction, which is one of the first signals of the outbreak.
 
-In \covemda{}, the mobility data for three sectors are provided: \verb!Restaurant_Recreation!, \verb!Grocery_Pharmacy! and \verb!Retail!. Unlike other functions in this section, here the data are focused on \textbf{seven major cities}: Los Angeles(\verb!la!), Houston(\verb!houston!), Boston(\verb!boston!), New York City(\verb!nyc!), Chicago(\verb!chicago!), Philadelphia(\verb!phila!) and Kansas City(\verb!kck!). All the data above are obtained from file \verb!<market_name>_<city_name>_patterns.csv! and can be visualized by function \verb!plot_mobility!. See Sec.\ref{func:plot_mobility} for more detail.
+In \covemda{}, the mobility data for three sectors are provided: \verb!Restaurant_Recreation!, \verb!Grocery_Pharmacy! and \verb!Retail!. Unlike other functions in this section, here the data are focused on \textbf{seven major cities}: Los Angeles(\verb!la!), Houston(\verb!houston!), Boston(\verb!boston!), New York City(\verb!nyc!), Chicago(\verb!chicago!), Philadelphia(\verb!phila!) and Kansas City(\verb!kck!). All the data above are obtained from file \verb!<market_name>_<city_name>_patterns.csv! and can be visualized by function \verb!plot_mobility!. See Section~\ref{func:plot_mobility} for more detail.
 
 
 
@@ -1317,7 +1648,7 @@ character vectors\\
 Default & \verb!'month'!.\\
 \end{tabular}\\
 \midrule
-Others & & See Sec.\ref{func:plot_area}.\\
+Others & & See Section~\ref{func:plot_area}.\\
 \bottomrule
 \end{tabular}
 \end{threeparttable}
@@ -1380,7 +1711,7 @@ Default & \verb!'none'!.\\
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-Others & & See Sec.\ref{func:plot_line_chart}.\\
+Others & & See Section~\ref{func:plot_line_chart}.\\
 \bottomrule
 \end{tabular}
 \end{threeparttable}
@@ -1446,7 +1777,7 @@ By default, this function plots the daily demand curve of the specified market f
         Default & \verb![0.05, 0.25, 0.5, 0.75, 0.95]!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{func:plot_quantile}.\\
+      Others & & See Section~\ref{func:plot_quantile}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -1505,7 +1836,7 @@ By default, this function plots the price distribution of the specified market f
         Default & \verb!'rto'!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{func:plot_histogram}.\\
+      Others & & See Section~\ref{func:plot_histogram}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -1576,7 +1907,7 @@ By default, this function plots the mobility data of the retail sector in the sp
         Default & \verb!'mean'!. \\
       \end{tabular}                         \\
       \midrule
-      Others & & See Sec.\ref{func:plot_line_chart}.\\
+      Others & & See Section~\ref{func:plot_line_chart}.\\
       \bottomrule
     \end{tabular}
   \end{threeparttable}
@@ -1793,7 +2124,7 @@ In this section, we introduce the usage of the functions above with several exam
 
 \subsubsection{Basic Usage} \label{subsubsec:vis_basic}
 
-All high-level functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name) is complimentary, and all the other input arguments are optional. The market name is specified as one of the seven terms:
+All high-level functions mentioned above have similar input-output forms and can be used similarly. To be specific, the first input argument (market name) is compulsory, and all the other input arguments are optional. The market name is specified as one of the seven terms:
 
 \begin{center}
   \verb!'caiso' | 'ercot' | 'isone' | 'miso' | 'nyiso' | 'pjm' | 'spp'!
@@ -1801,18 +2132,18 @@ All high-level functions mentioned above have similar input-output forms and can
 
 All the other input arguments should be in the form of \textbf{name-value pairs} for the function to correctly recognize.
 
-\begin{Code}
+\begin{Command}
 plot_demand(market,'argument_name1',argument_value1,'argument_name2',
 argument_value2,...);
-\end{Code}
+\end{Command}
 
-The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in Sec.\ref{subsubsec:vis_cus}.
+The output argument is the graphics object(s) of the plot, just like \verb!plot!, \verb!area! and \verb!histogram!. The number of the object depends on the function type. For \verb!plot_renewable_share!, \verb!plot_demand!, \verb!plot_price! and \verb!plot_mobility!, the function returns only one line object. For \verb!plot_generation_mix!, the number of area objects returned is equal to the number of fuel types. For \verb!plot_price_distribution!, the function returns only one histogram object. For \verb!plot_daily_demand_curve!, the function returns all the area objects and the line object (if exists) of the plot. It can be utilized to modify the plot after calling the function, as is illustrated in Section~\ref{subsubsec:vis_cus}.
 
 As long as the market name is given, a basic version of the desired plot can be simply obtained. For example, to plot the price distribution histogram of ISONE, just enter
 
-\begin{Code}
+\begin{Command}
 >> plot_price_distribution('isone');
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1822,10 +2153,10 @@ As long as the market name is given, a basic version of the desired plot can be 
 
 The result is displayed in Figure~\ref{fig:vis_eg1}. By default, the price distribution histogram of ISONE from 2017-01-01 to 2020-07-15 is plotted. If the user wants to change the date range, parameter \verb!DateRange! should be specified. In addition, some of the functions provide an option for resampling data, making them more flexible to use. For example, to plot the average price of every month in 2019, the user may enter
 
-\begin{Code}
+\begin{Command}
  >> plot_price('nyiso','DateRange',{'2019-01-01','2019-12-31'},'ResampleBin'
     ,'month','ResampleMethod','mean');
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1837,22 +2168,22 @@ The result is displayed in Figure~\ref{fig:vis_eg2}, where the desired price tre
 
 Like \verb!plot!, all the functions can be used more than once to plot multiple curves in one figure. For example, to plot the demand curves of NYISO in 2018, 2019 and 2020 with date alignment, first calculate the corresponding date range:
 
-\begin{Code}
+\begin{Command}
 >> dr_2020=datetime('2020-2-1'):datetime('2020-4-30');
 >> dr_2019=dr_2020-calyears(1);
 >> dr_2018=dr_2019-calyears(1);
-\end{Code}
+\end{Command}
 
 Thus the desired date ranges for 2018, 2019 and 2020 are \verb!dr_2018!, \verb!dr_2019! and \verb!dr_2020! correspondingly. Now plot the demand curves:
 
-\begin{Code}
+\begin{Command}
 >> plot_demand('nyiso','DateRange',dr_2018,'DisplayName','2018','LineStyle',
    ':','Color','#939598');
 >> plot_demand('nyiso','DateRange',dr_2019,'DisplayName','2019','LineStyle',
    '--','Color','#D95319');
 >> plot_demand('nyiso','DateRange',dr_2020,'DisplayName','2020','Color',
    '#0072BD','LineWidth',2.5);
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1860,7 +2191,7 @@ Thus the desired date ranges for 2018, 2019 and 2020 are \verb!dr_2018!, \verb!d
   \caption{Example: Demand Curves of NYISO} \label{fig:vis_eg3}
 \end{figure}
 
-The result is displayed in Figure~\ref{fig:vis_eg3}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In Sec.\ref{subsubsec:vis_cus}, the modification of plots is explored further.
+The result is displayed in Figure~\ref{fig:vis_eg3}, where the desired demand curves are plotted. In the example above, several properties of the lines are customized for better recognition. In Section~\ref{subsubsec:vis_cus}, the modification of plots is explored further.
 
 
 
@@ -1870,10 +2201,10 @@ Like \matlab{}, there are mainly two approaches in \covemda{} to modifying a plo
 
 In the last example in~\ref{subsubsec:vis_basic}, several properties (label, color and line width) of the three lines are modified by passing name-value pair arguments to the function. In this way, the user is able to integrate multiple modifications in one line of code, making it concise and simple. For example, to display markers at data points, the user may enter
 
-\begin{Code}
+\begin{Command}
 >> plot_price('nyiso','DateRange',{'2019-01-01','2019-12-31'},'ResampleBin'
    ,'month','ResampleMethod','mean','Marker','o');
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1885,11 +2216,11 @@ The result is displayed in Figure~\ref{fig:vis_eg4}, where all the data points a
 
 However, it is difficult to obtain detailed control of the plot by merely passing arguments to the functions, which is why sometimes we also need to change property values after plotting the figure. For example, to change the default display range of y-axis, the user may enter
 
-\begin{Code}
+\begin{Command}
 >> plot_daily_demand_curve('nyiso');
 >> ax=gca;
 >> ax.YLim=[0,4];
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1907,13 +2238,13 @@ The result is displayed in Figure~\ref{fig:vis_eg5_1} and~\ref{fig:vis_eg5_2}, w
 
 Under some circumstances, there may exist more than one object in the graph, which is common when using functions concerning \verb!area!. For example, to highlight renewable energy in a generation mix graph, the user may enter
 
-\begin{Code}
+\begin{Command}
 >> ar=plot_generation_mix('spp');
 >> ar(1).FaceColor='#868686';
 >> ar(2).FaceColor='#acacac';
 >> ar(4).FaceColor='#7f7f7f';
 >> ar(5).FaceColor='#6b6b6b';
-\end{Code}
+\end{Command}
 
 \begin{figure}
   \centering
@@ -1973,7 +2304,7 @@ Folder \verb!data_temp! contains the temporary files of the toolbox, with two su
 
 \subsection{Functions}  \label{subsec:func_list}
 
-Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found in the root directory, \covemda{} functions are typically divided into three levels: high level, low level and basic operations, which are also the corresponding folder names. All the high-level and low-level functions are illustrated above at the end of Sec.\ref{sec:visual}, Sec.\ref{sec:baseline} and Sec.\ref{sec:regression}.
+Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found in the root directory, \covemda{} functions are typically divided into three levels: high level, low level and basic operations, which are also the corresponding folder names. All the high-level and low-level functions are illustrated above at the end of Section~\ref{sec:visual}, Section~\ref{sec:baseline} and Section~\ref{sec:regression}.
 
 \begin{table}[!ht]
     \centering
@@ -1985,10 +2316,12 @@ Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found i
         \toprule
         Name & Description \\
         \midrule
-        \hyperref[func:cal_abnormal_price_index]{\texttt{cal\_abnormal\_price\_index}} & calculates the abnormal price index in Sec.\ref{subsec:abnormal_price_index} \\
+        \hyperref[func:cal_abnormal_price_index]{\texttt{cal\_abnormal\_price\_index}} & calculates the abnormal price index in Section~\ref{subsec:abnormal_price_index} \\
         \hyperref[func:cal_baseline]{\texttt{cal\_baseline}} & estimates the load baseline with three methods \\
         \hyperref[func:cal_distribution_diff]{\texttt{cal\_distribution\_diff}} & calculates the Wasserstein difference of price distribution \\
-        \hyperref[func:cal_excess_change_rate]{\texttt{cal\_excess\_change\_rate}} & calculates the excess change rate of renewable in Sec.\ref{subsec:excess_change_rate} \\
+        \hyperref[func:cal_excess_change_rate]{\texttt{cal\_excess\_change\_rate}} & calculates the excess change rate of renewable in Section~\ref{subsec:excess_change_rate} \\
+        \hyperref[func:OLS]{\texttt{OLS}} & gives a solution for the OLS regression model in Section~\ref{subsubsec:OLS}\\
+        \hyperref[func:VAR]{\texttt{VAR}} & gives a solution for the VAR regression model in Section~\ref{subsubsec:VAR}\\
         \hyperref[func:plot_baseline]{\texttt{plot\_baseline}} & plots the load baseline with different methods \\
         \hyperref[func:plot_daily_demand_curve]{\texttt{plot\_daily\_demand\_curve}} & plots the demand curve with variation in one day \\
         \hyperref[func:plot_demand]{\texttt{plot\_demand}} & plots the demand curve \\
@@ -2056,6 +2389,7 @@ Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found i
         \verb!basic_read! & reads files from COVID-EMDA+ \\
         \verb!basic_resample! & resamples the table by date \\
         \verb!basic_sum! & sums up all columns or rows \\
+        \verb!exchange_column! & exchange two columns in a table\\
         \bottomrule
     \end{tabular}
     \end{threeparttable}
@@ -2070,6 +2404,10 @@ Apart from \verb!install_covemda! and \verb!uninstall_covemda! which are found i
 %\section*{Reference} \label{sec:ref}
 %\addcontentsline{toc}{section}{Reference}
 \label{sec:ref}
+
+\nocite{rubin2003basic}
+\nocite{deeplearninguser}
+\nocite{statisticsuser}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}
